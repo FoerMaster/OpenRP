@@ -71,6 +71,7 @@ concommand.Add( "gm_spawn", function(ply, command, arguments)
 	undo.Finish( "Prop (" .. tostring( model ) .. ")" )
 
     ply:AddCleanup( "props", ent )
+    ply:AddCount( "props", ent )
 
     local phys = ent:GetPhysicsObject()
 	if (IsValid(phys)) then

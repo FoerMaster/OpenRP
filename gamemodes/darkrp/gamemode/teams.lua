@@ -5,5 +5,5 @@ local function makeTeam(name, color)
     return teamCounter
 end
 
-TEAM_CITIZEN = makeTeam('Гражанские', Color(25, 128, 61))
+TEAM_CITIZEN = makeTeam('Гражданские', Color(25, 128, 61))
 TEAM_GOVERNMENT = makeTeam('Правительство', Color(23, 55, 181))
