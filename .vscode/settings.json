@@ -1,0 +1,6 @@
+{
+    "gluals.gmod.debugRealm": "shared",
+    "Lua.diagnostics.globals": [
+        "GM"
+    ]
+}
