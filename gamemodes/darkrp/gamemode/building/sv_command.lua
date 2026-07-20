@@ -1,8 +1,6 @@
 concommand.Add( "gm_spawn", function(ply, command, arguments)
-    if (ply._SpawnCooldown > CurTime()) then
-        ply._SpawnCooldown = CurTime() + 0.3
-        return
-    end
+    if (ply._SpawnCooldown > CurTime()) then return end
+    ply._SpawnCooldown = CurTime() + 0.3
 
     local model = arguments[ 1 ]
 
@@ -52,24 +50,20 @@ concommand.Add( "gm_spawn", function(ply, command, arguments)
     hook.Run("PlayerSpawnedProp", ply, model, ent)
 
     local PhysObj = ent:GetPhysicsObject()
-	if ( !IsValid( PhysObj ) ) then return end
+	if ( IsValid( PhysObj ) ) then
+		local pmin, pmax = PhysObj:GetAABB()
+		local omin, omax = ent:OBBMins(), ent:OBBMaxs()
 
-	local min, max = PhysObj:GetAABB()
-	if ( !min || !max ) then return end
+		if ( pmin && pmax && omin && omax ) then
+			local PhysSize = ( pmin - pmax ):Length()
+			local ModelSize = ( omin - omax ):Length()
 
-	local PhysSize = (min - max):Length()
-	if ( PhysSize > 5 ) then return end
-
-	local min = ent:OBBMins()
-	local max = ent:OBBMaxs()
-	if ( !min || !max ) then return end
-
-	local ModelSize = ( min - max ):Length()
-	local Difference = math.abs( ModelSize - PhysSize )
-	if ( Difference < 10 ) then return end
-
-	ent:PhysicsInitBox( min, max )
-	ent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+			if ( PhysSize <= 5 && math.abs( ModelSize - PhysSize ) >= 10 ) then
+				ent:PhysicsInitBox( omin, omax )
+				ent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+			end
+		end
+	end
 
     undo.Create( "Prop" )
 		undo.SetPlayer( ply )
