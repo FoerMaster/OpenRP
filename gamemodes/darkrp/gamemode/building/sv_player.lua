@@ -33,7 +33,7 @@ end
 function PLAYER:AddCount(class,ent)
     if not IsValid(self) then return end
 
-    self._EntityCounts[class] = (self._EntityCounts(class) or 0) + 1
+    self._EntityCounts[class] = (self._EntityCounts[class] or 0) + 1
 
     self._OwnedEntity[ent:EntIndex()] = ent
 
@@ -42,13 +42,13 @@ function PLAYER:AddCount(class,ent)
     ent.OnRemoveCount = function()
         if not IsValid(self) then return end
         self._EntityCounts[class] = (self._EntityCounts[class] or 1) - 1
-        table.remove(self._OwnedEntity, ent:EntIndex())
+        self._OwnedEntity[ent:EntIndex()] = nil
     end
 end
 
 function PLAYER:GetTool(mode)
     local toolEnt = self:GetWeapon("gmod_tool")
-    if not IsValid(wep) or not wep.GetToolObject then return nil end
+    if not IsValid(toolEnt) or not toolEnt.GetToolObject then return nil end
 
     local tool = toolEnt:GetToolObject(mode)
     if not tool then return nil end
@@ -64,7 +64,7 @@ function PLAYER:CleanupProps()
     for entIndex, ent in pairs(self._OwnedEntity) do
         if ( IsValid(ent) and ent:IsProp() ) then
             ent:Remove()
-            table.remove(self._OwnedEntity, entIndex)
+            self._OwnedEntity[entIndex] = nil
         end
     end
     self._EntityCounts['props'] = 0
@@ -75,7 +75,7 @@ function PLAYER:CleanupEntities()
         if (IsValid(ent)) then
             ent:Remove()
         end
-        table.remove(self._OwnedEntity, entIndex)
+        self._OwnedEntity[entIndex] = nil
     end
     for class, _ in pairs(GAMEMODE.Config.Limits) do
         self._EntityCounts[class] = 0
