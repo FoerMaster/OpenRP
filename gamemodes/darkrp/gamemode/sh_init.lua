@@ -12,6 +12,7 @@ file.AutoInclude('config.lua')
 -- Команды и профессии: регистратор выполняет файлы из jobs/,
 -- поэтому команды (TEAM_*) должны быть объявлены раньше
 file.AutoInclude('teams.lua')
+file.AutoInclude('sh_jobs.lua')
 file.AutoInclude('sh_registrator.lua')
 
 -- Ядро: хуки геймода
