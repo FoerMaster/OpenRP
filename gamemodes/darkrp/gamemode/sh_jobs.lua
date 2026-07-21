@@ -20,9 +20,11 @@ DEF_PLY.AvoidPlayers			= true
 DEF_PLY.UseVMHands			= true
 
 DEF_PLY.SWEPs               = {}
-DEF_PLY.Default_SWEPs       = {"weapon_physgun", "hands", "gmod_tool"}
+DEF_PLY.Default_SWEPs       = {"weapon_physgun", "gmod_tool", "keys"}
 DEF_PLY.MaxPlayers = -1
 DEF_PLY.Model = {"models/player/odessa.mdl"}
+DEF_PLY.Flags = { }
+DEF_PLY.Salary = 0
 
 function DEF_PLY:SetupDataTables()
 	-- self.Player:NetworkVar( "Bool", 0, "Escaping" )
@@ -110,6 +112,9 @@ function DEF_PLY:CheckBuildLimit( class, count, limit )
 end
 
 function DEF_PLY:OnSpawnedProp( model, ent )
+end
+
+function DEF_PLY:OnSalary(salary)
 end
 
 player_manager.RegisterClass( "rp_player", DEF_PLY, nil )
