@@ -1,4 +1,5 @@
 GM.ChatCommands = {}
+chat = chat or {}
 
 util.AddNetworkString('chat_message')
 
