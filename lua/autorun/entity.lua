@@ -5,6 +5,8 @@ local doorClasses = {
     ["func_movelinear"] = true
 }
 
+local ENTITY = FindMetaTable('Entity')
+
 function ENTITY:IsDoor()
     return doorClasses[self:GetClass()] == true
 end

@@ -64,7 +64,7 @@ function PLAYER:GiveSalary()
 
 end
 
-AddChatCommand('dropmoney', function(sender, arguments)
+chat.AddCommand('dropmoney', function(sender, arguments)
     local amount = tonumber(arguments[1])
     if (!amount) then
         sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
@@ -86,7 +86,7 @@ AddChatCommand('dropmoney', function(sender, arguments)
     sender:SendChat(Color(61, 213, 61), string.format(GAMEMODE.Lang['MoneyDropped'], amount))
 end)
 
-AddChatCommand('givemoney', function(sender, arguments)
+chat.AddCommand('givemoney', function(sender, arguments)
     local amount = tonumber(arguments[1])
     if (!amount) then
         sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
