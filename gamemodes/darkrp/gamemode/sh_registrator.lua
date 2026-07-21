@@ -12,5 +12,5 @@ for _, fileName in ipairs(file.Find('jobs/*.lua', 'LUA')) do
     JOB = nil
 
     job.ID = string.StripExtension(fileName)
-    player_manager.RegisterPlayerClass(job.ID, job, 'rp_player')
+    player_manager.RegisterClass(job.ID, job, 'rp_player')
 end
