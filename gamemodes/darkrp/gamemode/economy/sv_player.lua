@@ -63,3 +63,59 @@ function PLAYER:GiveSalary()
     hook.Run("PlayerGotSalary", self, salary)
 
 end
+
+AddChatCommand('dropmoney', function(sender, arguments)
+    local amount = tonumber(arguments[1])
+    if (!amount) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
+        return
+    end
+
+    amount = math.floor(amount)
+    if (amount <= 0) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
+        return
+    end
+
+    if (!sender:CanAfford(amount)) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NotEnoughMoney'])
+        return
+    end
+
+    sender:DropMoney(amount)
+    sender:SendChat(Color(61, 213, 61), string.format(GAMEMODE.Lang['MoneyDropped'], amount))
+end)
+
+AddChatCommand('givemoney', function(sender, arguments)
+    local amount = tonumber(arguments[1])
+    if (!amount) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
+        return
+    end
+
+    amount = math.floor(amount)
+    if (amount <= 0) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
+        return
+    end
+
+    if (!sender:CanAfford(amount)) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NotEnoughMoney'])
+        return
+    end
+
+    local target = sender:GetEyeTrace().Entity
+    if (!IsValid(target) or !target:IsPlayer() or sender:GetPos():Distance(target:GetPos()) > 200) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NoPlayerInFront'])
+        return
+    end
+
+    if (target == sender) then
+        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['CantGiveToSelf'])
+        return
+    end
+
+    sender:TransferMoney(target, amount)
+    sender:SendChat(Color(69, 255, 69), string.format(GAMEMODE.Lang['MoneyGiven'], amount, target:Nick()))
+    target:SendChat(Color(69, 255, 69), string.format(GAMEMODE.Lang['MoneyReceived'], sender:Nick(), amount))
+end)

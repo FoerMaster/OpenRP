@@ -156,3 +156,7 @@ function GM:OnPlayerGotSalary(ply, salary)
     if canGot != nil then return canGot, custom end
     return true, salary
 end
+
+function GM:OnPlayerChatCommand(sender,command,arguments, noCmd)
+    return true
+end
