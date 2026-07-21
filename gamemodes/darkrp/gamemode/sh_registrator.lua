@@ -1,4 +1,8 @@
-for _, fileName in ipairs(file.Find('jobs/*.lua', 'LUA')) do
+local jobsDir = engine.ActiveGamemode() .. '/gamemode/jobs/'
+local jobFiles = file.Find(jobsDir .. '*.lua', 'LUA')
+
+
+for _, fileName in ipairs(jobFiles) do
     local path = 'jobs/' .. fileName
 
     if SERVER then
