@@ -5,9 +5,10 @@ GM.Author = "By Foer"
 PLAYER = FindMetaTable("Player")
 ENTITY = FindMetaTable("Entity")
 
--- База: сетевые переменные и конфиг, от них зависят все модули
+-- База: сетевые переменные, конфиг и локализация, от них зависят все модули
 file.AutoInclude('netvars.lua')
 file.AutoInclude('config.lua')
+file.AutoInclude('lang.lua')
 
 -- Команды и профессии: регистратор выполняет файлы из jobs/,
 -- поэтому команды (TEAM_*) должны быть объявлены раньше
@@ -19,6 +20,10 @@ file.AutoInclude('sh_registrator.lua')
 file.AutoInclude('sh_player.lua')
 file.AutoInclude('sv_entities.lua')
 file.AutoInclude('sv_player.lua')
+
+-- Чат
+file.AutoInclude('chat/sv_chat.lua')
+file.AutoInclude('chat/cl_chat.lua')
 
 -- Экономика
 file.AutoInclude('economy/sh_player.lua')
