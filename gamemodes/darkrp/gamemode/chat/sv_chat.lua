@@ -2,8 +2,8 @@ GM.ChatCommands = {}
 
 util.AddNetworkString('chat_message')
 
-function AddChatCommand(command, fallback)
-    GAMEMODE.ChatCommands[command] = fallback
+function chat.AddCommand(command, fallback)
+    (GAMEMODE or GM).ChatCommands[command] = fallback
 end
 
 function PLAYER:SendChat(...)
