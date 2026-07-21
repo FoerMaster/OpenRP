@@ -9,12 +9,14 @@ function ENT:SetupDataTables()
     self:NetworkVar("Int", 0, "Amount")
 end
 
-function ENT:Use(activator, caller, useType, value)
-    if not IsValid(activator) or not activator:IsPlayer() then return end
-    if self._taken then return end
-    self._taken = true
+if SERVER then
+    function ENT:Use(activator, caller, useType, value)
+        if not IsValid(activator) or not activator:IsPlayer() then return end
+        if self._taken then return end
+        self._taken = true
 
-    activator:AddMoney(self:GetAmount())
+        activator:AddMoney(self:GetAmount())
 
-    self:Remove()
+        self:Remove()
+    end
 end
