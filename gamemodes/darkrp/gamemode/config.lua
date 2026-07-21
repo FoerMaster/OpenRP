@@ -4,6 +4,7 @@ GM.Config = {
         Money = 50000,
         DoorCost = 1200,
         DoorSellPercent = 0.66,
+        SalaryEverySeconds = 60 * 10
     },
     Limits = {
         ['props'] = 100,

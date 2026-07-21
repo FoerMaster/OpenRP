@@ -48,3 +48,18 @@ function PLAYER:TransferMoney(ply, amount)
 
     hook.Run("PlayerTransferedMoney", self, ply,amount)
 end
+
+function PLAYER:GiveSalary()
+    local job = self:Job()
+    if (job.Salary <= 0) then return end
+
+    local canGetSalary, salary = hook.Run("OnPlayerGotSalary", self, job.Salary)
+    if (!canGetSalary) then return end
+
+    salary = math.floor(salary)
+
+    self:AddMoney(salary)
+
+    hook.Run("PlayerGotSalary", self, salary)
+
+end

@@ -16,6 +16,7 @@ file.AutoInclude('sh_jobs.lua')
 file.AutoInclude('sh_registrator.lua')
 
 -- Ядро: хуки геймода
+file.AutoInclude('sh_player.lua')
 file.AutoInclude('sv_entities.lua')
 file.AutoInclude('sv_player.lua')
 

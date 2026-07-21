@@ -7,9 +7,17 @@ function GM:PlayerInitialSpawn(ply, transition)
 
     ply:SetMoney(self.Config.Defaults.Money)
     player_manager.SetPlayerClass(ply, self.Config.Defaults.Job)
+
+    timer.Create("rp_salary_" .. ply:UserID(), self.Config.Defaults.SalaryEverySeconds, 0, function()
+        if IsValid(ply) then
+            ply:GiveSalary()
+        end
+    end)
 end
 
 function GM:PlayerDisconnected(ply)
+    timer.Remove("rp_salary_" .. ply:UserID())
+
     ply:SellAllDoors()
     ply:LeaveAllDoors()
 end
@@ -72,9 +80,11 @@ function GM:PhysgunDrop( ply, ent )
     end
 
     local phys = ent:GetPhysicsObject()
-    phys:EnableMotion(false)
-    phys:SetDragCoefficient(0)
-    phys:SetMass(0)
+    if (IsValid(phys)) then
+        phys:EnableMotion(false)
+        phys:SetDragCoefficient(0)
+        phys:SetMass(0)
+    end
 end
 
 function GM:OnPlayerDropMoney(ply, amount)
@@ -109,6 +119,7 @@ end
 function GM:OnPlayerBuyDoor(ply, ent)
     local canBuy, cost = player_manager.RunClass(ply, "CanBuyDoor", ent)
     if canBuy != nil then return canBuy, cost end
+    if ply:HasJobFlag(JOB_FLAG_CANT_BUY_DOOR) then return false, 0 end
 
     return true, self.Config.Defaults.DoorCost
 end
@@ -138,4 +149,10 @@ end
 
 function GM:PlayerSpawnedProp(ply, model, ent)
     player_manager.RunClass(ply, "OnSpawnedProp", model, ent)
+end
+
+function GM:OnPlayerGotSalary(ply, salary)
+    local canGot, custom = player_manager.RunClass(ply, "OnSalary", salary)
+    if canGot != nil then return canGot, custom end
+    return true, salary
 end
