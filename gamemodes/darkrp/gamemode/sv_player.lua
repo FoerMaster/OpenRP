@@ -40,17 +40,21 @@ function GM:PlayerButtonUp(ply, button)
 end
 
 function GM:CanTool(ply, trace, _)
-    if trace.Entity:IsWorld() then
+    local ent = trace.Entity
+
+    if ent:IsWorld() then
         return true
-    elseif not IsValid(trace.Entity) then
+    elseif not IsValid(ent) then
         return false
     end
 
-    return true
+    return ent:IsOwnedBy(ply)
 end
 
 function GM:PhysgunPickup( ply, ent )
-    return IsValid(ent) and !ent.DontAllowPhysgun and not ent:IsPlayer()
+    if not IsValid(ent) or ent.DontAllowPhysgun or ent:IsPlayer() then return false end
+
+    return ent:IsOwnedBy(ply)
 end
 
 function GM:GravGunPickupAllowed( ply, ent )

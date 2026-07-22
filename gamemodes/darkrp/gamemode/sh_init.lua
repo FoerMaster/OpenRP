@@ -38,3 +38,5 @@ file.AutoInclude('doors/sv_player.lua')
 file.AutoInclude('building/sv_player.lua')
 file.AutoInclude('building/sv_aps.lua')
 file.AutoInclude('building/sv_command.lua')
+
+file.AutoInclude('hud/cl_init.lua')

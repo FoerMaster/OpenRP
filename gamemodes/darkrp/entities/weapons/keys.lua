@@ -25,7 +25,7 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic   = false
 SWEP.Secondary.Ammo        = "none"
 
-SWEP.DoorRange = 100
+SWEP.DoorRange = 70
 
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + 0.3)
@@ -49,8 +49,10 @@ function SWEP:ToggleDoor(state)
     if not IsValid(door) or not door:IsDoor() then return end
     if owner:GetShootPos():Distance(tr.HitPos) > self.DoorRange then return end
 
-    if door:DoorIsOwned() and not door:CanBeOpenedBy(owner) then
-        self:Knock(door)
+    if not door:CanBeOpenedBy(owner) then
+        if (state == "lock") then
+            self:Knock(door)
+        end
         return
     end
 
@@ -65,7 +67,7 @@ function SWEP:ToggleDoor(state)
 end
 
 function SWEP:Knock(door)
-    door:EmitSound("physics/wood/wood_crate_impact_hard2.wav", 80, math.random(95, 105))
+    door:EmitSound("physics/wood/wood_crate_impact_hard2.wav", 80, math.random(55, 175))
 end
 
 function SWEP:Reload()

@@ -27,6 +27,14 @@ local function worldAABB(self, padding)
     return wMin - padding, wMax + padding
 end
 
+function ENTITY:GetRPOwner()
+    return self:GetNetVar('owner')
+end
+
+function ENTITY:IsOwnedBy(ply)
+    return self:GetRPOwner() == ply
+end
+
 function ENTITY:Ghost()
     if (not IsValid(self)) then return end
     self.ghostedAt = CurTime() + 120
