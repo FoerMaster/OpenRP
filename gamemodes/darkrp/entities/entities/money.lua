@@ -3,7 +3,15 @@ AddCSLuaFile()
 ENT.Type      = "anim"
 ENT.Base      = "roleplay_base"
 ENT.PrintName = "Деньги"
-ENT.Model     = "models/props/cs_assault/money.mdl"
+ENT.Model     = "models/openrp/money_00.mdl"
+
+function ENT:Initialize()
+    if (self:GetAmount() > 1000) then
+        self.Model = "models/openrp/money_01.mdl"
+    end
+
+    self.BaseClass.Initialize(self)
+end
 
 function ENT:SetupDataTables()
     self:NetworkVar("Int", 0, "Amount")

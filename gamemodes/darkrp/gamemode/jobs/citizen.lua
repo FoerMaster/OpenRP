@@ -1,6 +1,6 @@
 JOB.DisplayName = "Гражданский"
-JOB.Description = "Close-quarters security guard armed with a shotgun"
-JOB.Color = Color(25, 99, 255)
+JOB.Description = "Стандартная работа"
+JOB.Color = Color(32, 103, 136)
 JOB.Team = TEAM_CITIZEN
 JOB.MaxPlayers = -1
 JOB.MaxHealth = 100

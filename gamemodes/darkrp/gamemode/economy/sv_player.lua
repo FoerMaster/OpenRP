@@ -77,6 +77,11 @@ chat.AddCommand('dropmoney', function(sender, arguments)
         return
     end
 
+    if (amount > 10001) then
+        sender:SendChat(Color(255, 69, 69), string.format(GAMEMODE.Lang['ToManyMoney'],10000))
+        return
+    end
+
     if (!sender:CanAfford(amount)) then
         sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NotEnoughMoney'])
         return
