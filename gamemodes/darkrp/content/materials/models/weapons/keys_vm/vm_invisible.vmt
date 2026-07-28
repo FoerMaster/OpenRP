@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "vgui/white"
+	"$nodraw" "1"
+	"$model" "1"
+	"$translucent" "1"
+	"$alpha" "0"
+}
