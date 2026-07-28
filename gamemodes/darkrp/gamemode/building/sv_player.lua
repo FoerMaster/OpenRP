@@ -1,5 +1,5 @@
 function PLAYER:LimitHit(class)
--- TODO: Make hit limit
+    self:Notify(string.format(GAMEMODE.Lang['LimitHit'], class), 1)
 end
 
 function PLAYER:GetCount(class, minus)

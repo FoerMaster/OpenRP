@@ -60,6 +60,8 @@ function PLAYER:GiveSalary()
 
     self:AddMoney(salary)
 
+    self:Notify(string.format(GAMEMODE.Lang['SalaryReceived'], salary))
+
     hook.Run("PlayerGotSalary", self, salary)
 
 end

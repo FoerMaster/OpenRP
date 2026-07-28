@@ -6,7 +6,10 @@ concommand.Add( "gm_spawn", function(ply, command, arguments)
 
     if ( model == nil ) then return end
 
-	if (!GAMEMODE.Config.AllowedProps[model]) then return end
+	if (!GAMEMODE.Config.AllowedProps[model]) then
+        ply:Notify(GAMEMODE.Lang['PropNotAllowed'], 1)
+        return
+    end
 
     if (!util.IsValidProp(model)) then return end
 

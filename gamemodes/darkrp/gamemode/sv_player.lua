@@ -54,7 +54,12 @@ function GM:CanTool(ply, trace, _)
         return false
     end
 
-    return ent:IsOwnedBy(ply)
+    if not ent:IsOwnedBy(ply) then
+        ply:Notify(self.Lang['NotYourEntity'], 1)
+        return false
+    end
+
+    return true
 end
 
 function GM:PhysgunPickup( ply, ent )
@@ -195,6 +200,13 @@ function GM:OnPlayerChatCommand(sender,command,arguments, noCmd)
     return true
 end
 
+function PLAYER:Notify(text, type, time)
+    net.Start('notify')
+        net.WriteString(text)
+        net.WriteUInt(type or 0, 3)
+        net.WriteUInt(time or 5, 5)
+    net.Send(self)
+end
 
 function GM:ShowTeam(ply)
     local ent = ply:GetEyeTrace().Entity
