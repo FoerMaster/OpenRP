@@ -38,6 +38,14 @@ function GM:PlayerSay(sender, text, teamChat)
             if (hook.Run('OnPlayerChatCommand', sender, command, arguments, noCommand) == false) then
                 return ""
             end
+            
+            if sender.LastCommand and sender.LastCommand > CurTime() then
+                sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang["StopCommandSpamming"])
+                sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
+                return ""
+            end
+
+            sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
 
             callback(sender, arguments, noCommand)
 
@@ -45,6 +53,7 @@ function GM:PlayerSay(sender, text, teamChat)
         else
             sender:SendChat(Color(255, 69, 69), self.Lang['CommandNotFound'])
         end
+
 
         return ""
     end

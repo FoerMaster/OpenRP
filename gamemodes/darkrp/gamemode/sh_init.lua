@@ -25,6 +25,9 @@ file.AutoInclude('sv_player.lua')
 file.AutoInclude('chat/sv_chat.lua')
 file.AutoInclude('chat/cl_chat.lua')
 
+-- Смена профессий
+file.AutoInclude('sv_jobs.lua')
+
 -- Экономика
 file.AutoInclude('economy/sh_player.lua')
 file.AutoInclude('economy/sv_player.lua')

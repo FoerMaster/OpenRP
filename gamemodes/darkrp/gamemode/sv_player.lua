@@ -22,6 +22,12 @@ function GM:PlayerDisconnected(ply)
     ply:LeaveAllDoors()
 end
 
+function GM:PlayerLoadout(ply)
+    ply:StripWeapons()
+    ply:RemoveAllAmmo()
+    player_manager.RunClass(ply, "Loadout")
+end
+
 function GM:PlayerSpawnObject(ply)
     return true
 end
@@ -161,6 +167,36 @@ function GM:OnPlayerGotSalary(ply, salary)
     return true, salary
 end
 
+function GM:OnPlayerBecomeJob(ply, job, oldJob)
+    local allow = job:CanJoin(ply)
+    if allow != nil then return allow end
+
+    -- Считаем по классу, а не через team.NumPlayers: одну команду делят несколько работ
+    if (job.MaxPlayers >= 0) then
+        local count = 0
+
+        for _, other in ipairs(player.GetAll()) do
+            if (player_manager.GetPlayerClass(other) == job.ID) then
+                count = count + 1
+            end
+        end
+
+        if (count >= job.MaxPlayers) then return false end
+    end
+
+    return true
+end
+
+function GM:PlayerBecameJob(ply, job, oldJob)
+    player_manager.RunClass(ply, "OnJoined", oldJob)
+end
+
 function GM:OnPlayerChatCommand(sender,command,arguments, noCmd)
     return true
+end
+
+
+function GM:ShowTeam(ply)
+    local ent = ply:GetEyeTrace().Entity
+    ply:BuyDoor(ent)
 end

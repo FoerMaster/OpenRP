@@ -117,6 +117,12 @@ end
 function DEF_PLY:OnSalary(salary)
 end
 
+function DEF_PLY:CanJoin( ply )
+end
+
+function DEF_PLY:OnJoined( oldJob )
+end
+
 player_manager.RegisterClass( "rp_player", DEF_PLY, nil )
 
 -- Флаги:
