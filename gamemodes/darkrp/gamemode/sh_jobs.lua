@@ -81,6 +81,12 @@ end
 function DEF_PLY:CanDropMoney( amount )
 end
 
+function DEF_PLY:CanDropDeathMoney( amount )
+end
+
+function DEF_PLY:OnDroppedDeathMoney( amount, ent )
+end
+
 function DEF_PLY:OnDroppedMoney( amount, ent )
 end
 
@@ -142,3 +148,4 @@ JOB_FLAG_UNDISMISSABLE = 1
 JOB_FLAG_NEED_VOTE = 2
 JOB_FLAG_NONRP = 3
 JOB_FLAG_CANT_BUY_DOOR = 4
+JOB_FLAG_DEMOTE_ON_DEATH = 5

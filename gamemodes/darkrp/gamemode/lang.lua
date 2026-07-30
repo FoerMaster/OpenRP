@@ -60,7 +60,11 @@ GM.Lang = {
     ['DemoteVoteRejected'] = "Игроки проголосовали против увольнения игрока %s!",
     ['DemoteVoteStarted'] = "Начато голосование за увольнение игрока %s",
     ['Demoted'] = "Вас уволили с работы «%s». Причина: %s",
-    ['PlayerDemoted'] = "Игрок %s уволен с работы «%s»"
+    ['PlayerDemoted'] = "Игрок %s уволен с работы «%s»",
+    ['DeathMoneyLost'] = "Вы потеряли %s$",
+    ['DeathRespawn'] = "Возрождение через %s",
+    ['DeathPressKey'] = "Нажмите любую клавишу",
+    ['DemotedOnDeath'] = "Вы потеряли профессию «%s» после смерти"
 }
 
 function roleplay.L(key, ...)

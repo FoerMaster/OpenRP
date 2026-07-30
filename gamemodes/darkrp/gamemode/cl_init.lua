@@ -27,6 +27,9 @@ include('economy/sh_player.lua')
 -- Двери
 include('doors/sh_door.lua')
 
+-- Смерть
+include('death/cl_death.lua')
+
 include('hud/cl_init.lua')
 
 function GM:OnAchievementAchieved() end
@@ -48,8 +51,39 @@ function GM:Think()
     roleplay.Vote.Prune()
 end
 
+-- Цепочка повторяет базовый геймод: своей реализацией мы её замещаем,
+-- а от неё зависят транспорт, JOB:CalcView и WEAPON:CalcView
+function GM:CalcView(ply, origin, angles, fov, znear, zfar)
+    local death = roleplay.Death.CalcView(ply)
+    if (death) then return death end
+
+    local view = {
+        origin = origin,
+        angles = angles,
+        fov = fov,
+        znear = znear,
+        zfar = zfar,
+        drawviewer = false
+    }
+
+    local vehicle = ply:GetVehicle()
+    if (IsValid(vehicle)) then return hook.Run("CalcVehicleView", vehicle, ply, view) end
+
+    player_manager.RunClass(ply, "CalcView", view)
+
+    local weapon = ply:GetActiveWeapon()
+    if (IsValid(weapon) and weapon.CalcView) then
+        local pos, ang, weaponFov = weapon:CalcView(ply, Vector(view.origin), Angle(view.angles), view.fov)
+
+        view.origin, view.angles, view.fov = pos or view.origin, ang or view.angles, weaponFov or view.fov
+    end
+
+    return view
+end
+
 function GM:HUDPaint()
     roleplay.HUD.Draw()
+    roleplay.Death.Draw()
 end
 
 net.Receive('notify', function()

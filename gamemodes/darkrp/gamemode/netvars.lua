@@ -7,6 +7,11 @@ nw.Register 'money'
     :Read(net.ReadUInt, 32)
     :SetLocalPlayer()
 
+nw.Register 'respawn_at'
+    :Write(net.WriteFloat)
+    :Read(net.ReadFloat)
+    :SetLocalPlayer()
+
 nw.Register 'door_data'
     :Write(net.WriteTable)
     :Read(net.ReadTable)

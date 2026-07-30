@@ -42,6 +42,28 @@ end
 
 function GM:PlayerButtonDown(ply, button)
     numpad.Activate(ply, button)
+
+    if (!ply:Alive() and button > KEY_NONE and button <= KEY_LAST) then
+        roleplay.Death.TryRespawn(ply)
+    end
+end
+
+function GM:DoPlayerDeath(ply, attacker, dmginfo)
+    roleplay.Death.Handle(ply)
+end
+
+function GM:PlayerDeathThink(ply)
+end
+
+function GM:OnPlayerDropDeathMoney(ply, amount)
+    local allow, custom = player_manager.RunClass(ply, "CanDropDeathMoney", amount)
+    if allow != nil then return allow, custom end
+
+    return true, amount
+end
+
+function GM:PlayerDroppedDeathMoney(ply, amount, ent)
+    player_manager.RunClass(ply, "OnDroppedDeathMoney", amount, ent)
 end
 
 function GM:PlayerButtonUp(ply, button)

@@ -20,6 +20,7 @@ AddCSLuaFile('doors/sh_door.lua')
 AddCSLuaFile('chat/cl_chat.lua')
 AddCSLuaFile('vgui/cl_skin.lua')
 AddCSLuaFile('voting/cl_init.lua')
+AddCSLuaFile('death/cl_death.lua')
 AddCSLuaFile('hud/cl_init.lua')
 
 include('sh_init.lua')
@@ -57,6 +58,9 @@ include('economy/sv_player.lua')
 include('doors/sh_door.lua')
 include('doors/sv_door.lua')
 include('doors/sv_player.lua')
+
+-- Смерть
+include('death/sv_death.lua')
 
 -- Строительство
 include('building/sv_player.lua')
