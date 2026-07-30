@@ -1,7 +1,7 @@
 util.AddNetworkString('voting')
 util.AddNetworkString('voting_end')
 
-vote = vote or {
+roleplay.Vote = roleplay.Vote or {
     votings = {}
 }
 
@@ -25,19 +25,19 @@ local function close(id, voting)
     net.Send(pending)
 end
 
-function vote.Start(id, requestText, delay, callback, excludePlayers, onFailCallback)
-    if (vote.votings[id]) then return false end
+function roleplay.Vote.Start(id, requestText, delay, callback, excludePlayers, onFailCallback)
+    if (roleplay.Vote.votings[id]) then return false end
 
     local voters = {}
 
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in player.Iterator() do
         if (excludePlayers and table.HasValue(excludePlayers, ply)) then continue end
         voters[ply] = true
     end
 
     if (table.IsEmpty(voters)) then return false end
 
-    vote.votings[id] = {
+    roleplay.Vote.votings[id] = {
         text = requestText,
         voters = voters,
         votes = {},
@@ -52,17 +52,17 @@ function vote.Start(id, requestText, delay, callback, excludePlayers, onFailCall
     net.Send(table.GetKeys(voters))
 
     timer.Create('vote_' .. id, delay, 1, function()
-        vote.Finish(id)
+        roleplay.Vote.Finish(id)
     end)
 
     return true
 end
 
-function vote.Finish(id)
-    local voting = vote.votings[id]
+function roleplay.Vote.Finish(id)
+    local voting = roleplay.Vote.votings[id]
     if (!voting) then return end
 
-    vote.votings[id] = nil
+    roleplay.Vote.votings[id] = nil
     timer.Remove('vote_' .. id)
     close(id, voting)
 
@@ -83,11 +83,11 @@ function vote.Finish(id)
     end
 end
 
-function vote.Cancel(id)
-    local voting = vote.votings[id]
+function roleplay.Vote.Cancel(id)
+    local voting = roleplay.Vote.votings[id]
     if (!voting) then return end
 
-    vote.votings[id] = nil
+    roleplay.Vote.votings[id] = nil
     timer.Remove('vote_' .. id)
     close(id, voting)
 end
@@ -96,7 +96,7 @@ net.Receive('voting', function(_, ply)
     local id = net.ReadString()
     local choice = net.ReadBool()
 
-    local voting = vote.votings[id]
+    local voting = roleplay.Vote.votings[id]
     if (!voting) then return end
     if (!voting.voters[ply]) then return end
     if (voting.votes[ply] != nil) then return end
@@ -104,17 +104,17 @@ net.Receive('voting', function(_, ply)
     voting.votes[ply] = choice
 
     if (allVoted(voting)) then
-        vote.Finish(id)
+        roleplay.Vote.Finish(id)
     end
 end)
 
-hook.Add('PlayerDisconnected', 'VotingCleanup', function(ply)
-    for id, voting in pairs(vote.votings) do
+function roleplay.Vote.Cleanup(ply)
+    for id, voting in pairs(roleplay.Vote.votings) do
         voting.voters[ply] = nil
         voting.votes[ply] = nil
 
         if (allVoted(voting)) then
-            vote.Finish(id)
+            roleplay.Vote.Finish(id)
         end
     end
-end)
+end

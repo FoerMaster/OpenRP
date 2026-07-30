@@ -62,3 +62,11 @@ GM.Lang = {
     ['Demoted'] = "Вас уволили с работы «%s». Причина: %s",
     ['PlayerDemoted'] = "Игрок %s уволен с работы «%s»"
 }
+
+function roleplay.L(key, ...)
+    local text = GAMEMODE.Lang[key] or key
+
+    if (select('#', ...) == 0) then return text end
+
+    return string.format(text, ...)
+end

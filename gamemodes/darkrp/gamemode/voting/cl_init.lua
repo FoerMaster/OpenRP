@@ -1,4 +1,4 @@
-vote = vote or {
+roleplay.Vote = roleplay.Vote or {
     votings = {},
     w = 200,
     x = ScrW() - 210,
@@ -6,12 +6,12 @@ vote = vote or {
 }
 
 local MAX_LINES = 5
-local FONT = kit.Fonts.Label
-local META_FONT = kit.Fonts.Label
+local FONT = roleplay.Kit.Fonts.Label
+local META_FONT = roleplay.Kit.Fonts.Label
 local CHROME = 96
 
-function vote.Active()
-    return vote.votings[1]
+function roleplay.Vote.Active()
+    return roleplay.Vote.votings[1]
 end
 
 local UTF8_CHAR = '[%z\1-\127\194-\244][\128-\191]*'
@@ -76,7 +76,7 @@ local function build()
     panel.Paint = function(_, w, h)
         RNDX.Rect(0, 0, w, h):Rad(8):Color(30, 30, 30, 250):Draw()
 
-        local voting = vote.Active()
+        local voting = roleplay.Vote.Active()
         RNDX.Circle(16, 16, 8):Color(255, 255, 255, 5):Outline(8):Angles(0, 360):Draw()
         RNDX.Circle(16, 16, 8):Color(28, 91, 232, 255):Outline(8):Angles(0, 0 + (360 * math.max(voting.endsAt - CurTime(), 0) / voting.delay)):Draw()
     end
@@ -91,7 +91,7 @@ local function build()
     panel.time:Dock(LEFT)
     panel.time:SetFont(META_FONT)
     panel.time.Think = function(self)
-        local voting = vote.Active()
+        local voting = roleplay.Vote.Active()
         if (!voting) then return end
 
         self:SetText(string.format(GAMEMODE.Lang['VoteSeconds'], math.ceil(math.max(voting.endsAt - CurTime(), 0))))
@@ -100,28 +100,28 @@ local function build()
 
     local buttons = vgui.Create('DPanel', panel)
     buttons:Dock(BOTTOM)
-    buttons:SetTall(kit.ButtonHeight)
+    buttons:SetTall(roleplay.Kit.ButtonHeight)
     buttons:SetPaintBackground(false)
 
     panel.no = vgui.Create('DButton', buttons)
     panel.no:Dock(RIGHT)
     panel.no:DockMargin(6, 0, 0, 0)
     panel.no:SetText(GAMEMODE.Lang['VoteNo'])
-    panel.no:SetFont(kit.Fonts.Button)
+    panel.no:SetFont(roleplay.Kit.Fonts.Button)
     panel.no:SetTextColor(color_white)
     panel.no:SetSkin('OpenRP')
     panel.no.DoClick = function()
-        vote.Send(false)
+        roleplay.Vote.Send(false)
     end
 
     panel.yes = vgui.Create('DButton', buttons)
     panel.yes:Dock(FILL)
     panel.yes:SetText(GAMEMODE.Lang['VoteYes'])
-    panel.yes:SetFont(kit.Fonts.Button)
+    panel.yes:SetFont(roleplay.Kit.Fonts.Button)
     panel.yes:SetTextColor(color_white)
     panel.yes:SetSkin('OpenRP')
     panel.yes.DoClick = function()
-        vote.Send(true)
+        roleplay.Vote.Send(true)
     end
 
     panel.text = vgui.Create('DLabel', panel)
@@ -135,58 +135,58 @@ local function build()
     return panel
 end
 
-function vote.Refresh()
-    local voting = vote.Active()
+function roleplay.Vote.Refresh()
+    local voting = roleplay.Vote.Active()
 
     if (!voting) then
-        if (IsValid(vote.panel)) then
-            vote.panel:Remove()
+        if (IsValid(roleplay.Vote.panel)) then
+            roleplay.Vote.panel:Remove()
         end
         return
     end
 
-    if (!IsValid(vote.panel)) then
-        vote.panel = build()
+    if (!IsValid(roleplay.Vote.panel)) then
+        roleplay.Vote.panel = build()
     end
 
-    local text, height = fit(voting.text, vote.w - 20)
+    local text, height = fit(voting.text, roleplay.Vote.w - 20)
 
-    vote.panel.text:SetText(text)
-    vote.panel.text:SetTall(height)
-    vote.panel.no:SetWide((vote.w - 26) * 0.5)
+    roleplay.Vote.panel.text:SetText(text)
+    roleplay.Vote.panel.text:SetTall(height)
+    roleplay.Vote.panel.no:SetWide((roleplay.Vote.w - 26) * 0.5)
 
-    vote.panel:SetSize(vote.w, CHROME + height)
-    vote.panel:InvalidateLayout(true)
-    vote.panel:SetPos(vote.x or ScrW() * 0.5 - vote.w * 0.5, vote.y)
+    roleplay.Vote.panel:SetSize(roleplay.Vote.w, CHROME + height)
+    roleplay.Vote.panel:InvalidateLayout(true)
+    roleplay.Vote.panel:SetPos(roleplay.Vote.x or ScrW() * 0.5 - roleplay.Vote.w * 0.5, roleplay.Vote.y)
 end
 
-function vote.Remove(id)
-    for i, voting in ipairs(vote.votings) do
+function roleplay.Vote.Remove(id)
+    for i, voting in ipairs(roleplay.Vote.votings) do
         if (voting.id == id) then
-            table.remove(vote.votings, i)
-            vote.Refresh()
+            table.remove(roleplay.Vote.votings, i)
+            roleplay.Vote.Refresh()
             return
         end
     end
 end
 
-function vote.Prune()
+function roleplay.Vote.Prune()
     local changed = false
 
-    for i = #vote.votings, 1, -1 do
-        if (vote.votings[i].endsAt <= CurTime()) then
-            table.remove(vote.votings, i)
+    for i = #roleplay.Vote.votings, 1, -1 do
+        if (roleplay.Vote.votings[i].endsAt <= CurTime()) then
+            table.remove(roleplay.Vote.votings, i)
             changed = true
         end
     end
 
     if (changed) then
-        vote.Refresh()
+        roleplay.Vote.Refresh()
     end
 end
 
-function vote.Send(choice)
-    local voting = vote.Active()
+function roleplay.Vote.Send(choice)
+    local voting = roleplay.Vote.Active()
     if (!voting) then return end
 
     net.Start('voting')
@@ -194,8 +194,8 @@ function vote.Send(choice)
         net.WriteBool(choice)
     net.SendToServer()
 
-    table.remove(vote.votings, 1)
-    vote.Refresh()
+    table.remove(roleplay.Vote.votings, 1)
+    roleplay.Vote.Refresh()
 end
 
 net.Receive('voting', function()
@@ -203,36 +203,32 @@ net.Receive('voting', function()
     local text = net.ReadString()
     local delay = net.ReadUInt(8)
 
-    table.insert(vote.votings, {
+    table.insert(roleplay.Vote.votings, {
         id = id,
         text = text,
         delay = delay,
         endsAt = CurTime() + delay
     })
 
-    vote.Refresh()
+    roleplay.Vote.Refresh()
 
     surface.PlaySound('buttons/button17.wav')
 end)
 
 net.Receive('voting_end', function()
-    vote.Remove(net.ReadString())
+    roleplay.Vote.Remove(net.ReadString())
 end)
 
-hook.Add('Think', 'VotingPrune', function()
-    vote.Prune()
-end)
-
-hook.Add('PlayerBindPress', 'Voting', function(ply, bind, pressed)
-    if (!vote.Active() or !pressed) then return end
+function roleplay.Vote.HandleBind(bind, pressed)
+    if (!roleplay.Vote.Active() or !pressed) then return end
 
     if (bind == 'gm_showhelp') then
-        vote.Send(true)
+        roleplay.Vote.Send(true)
         return true
     end
 
     if (bind == 'gm_showteam') then
-        vote.Send(false)
+        roleplay.Vote.Send(false)
         return true
     end
-end)
+end

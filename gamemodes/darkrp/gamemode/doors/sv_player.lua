@@ -4,40 +4,40 @@ end
 
 function PLAYER:BuyDoor(ent)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        self:Notify(GAMEMODE.Lang['NotLookingAtDoor'], 1)
+        self:NotifyError('NotLookingAtDoor')
         return
     end
 
     if !ent:DoorCanBeOwned() then
-        self:Notify(GAMEMODE.Lang['DoorCantBeOwned'], 1)
+        self:NotifyError('DoorCantBeOwned')
         return
     end
 
     if (ent:DoorRawData().main_owner != nil) then
-        self:Notify(GAMEMODE.Lang['DoorAlreadyOwned'], 1)
+        self:NotifyError('DoorAlreadyOwned')
         return
     end
 
     if (ent:DoorTeam() != nil or ent:DoorJob() != nil) then
-        self:Notify(GAMEMODE.Lang['DoorReserved'], 1)
+        self:NotifyError('DoorReserved')
         return
     end
 
     local limit = GAMEMODE.Config.Defaults.MaxDoors
     if (self:CountDoors() >= limit) then
-        self:Notify(string.format(GAMEMODE.Lang['DoorLimit'], limit), 1)
+        self:NotifyError('DoorLimit', limit)
         return
     end
 
     local canBuy, cost = hook.Run("OnPlayerBuyDoor", self, ent)
     if (!canBuy) then
-        self:Notify(GAMEMODE.Lang['DoorCantBuy'], 1)
+        self:NotifyError('DoorCantBuy')
         return
     end
 
     cost = cost or GAMEMODE.Config.Defaults.DoorCost
     if (!self:CanAfford(cost)) then
-        self:Notify(GAMEMODE.Lang['NotEnoughMoney'], 1)
+        self:NotifyError('NotEnoughMoney')
         return
     end
 
@@ -45,25 +45,25 @@ function PLAYER:BuyDoor(ent)
     ent:SetDoorMainOwner(self)
     self._OwnedDoors[ent] = true
 
-    self:Notify(string.format(GAMEMODE.Lang['DoorBought'], cost))
+    self:NotifyInfo('DoorBought', cost)
 
     hook.Run("PlayerBoughtDoor", self, ent, cost)
 end
 
 function PLAYER:SellDoor(ent, quiet)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        if (!quiet) then self:Notify(GAMEMODE.Lang['NotLookingAtDoor'], 1) end
+        if (!quiet) then self:NotifyError('NotLookingAtDoor') end
         return
     end
 
     if (!ent:IsDoorMainOwner(self)) then
-        if (!quiet) then self:Notify(GAMEMODE.Lang['DoorNotYours'], 1) end
+        if (!quiet) then self:NotifyError('DoorNotYours') end
         return
     end
 
     local canSell, refund = hook.Run("OnPlayerSellDoor", self, ent)
     if (!canSell) then
-        if (!quiet) then self:Notify(GAMEMODE.Lang['DoorCantSell'], 1) end
+        if (!quiet) then self:NotifyError('DoorCantSell') end
         return
     end
 
@@ -73,7 +73,7 @@ function PLAYER:SellDoor(ent, quiet)
     ent:ClearDoorOwnership()
     self._OwnedDoors[ent] = nil
 
-    if (!quiet) then self:Notify(string.format(GAMEMODE.Lang['DoorSold'], refund)) end
+    if (!quiet) then self:NotifyInfo('DoorSold', refund) end
 
     hook.Run("PlayerSoldDoor", self, ent, refund)
 
@@ -93,100 +93,100 @@ function PLAYER:SellAllDoors()
     end
 
     if (sold > 0) then
-        self:Notify(string.format(GAMEMODE.Lang['DoorsSold'], sold, total))
+        self:NotifyInfo('DoorsSold', sold, total)
     end
 end
 
 function PLAYER:RenameDoor(ent, name)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        self:Notify(GAMEMODE.Lang['NotLookingAtDoor'], 1)
+        self:NotifyError('NotLookingAtDoor')
         return
     end
 
     if (!ent:CanBeChangeNameBy(self)) then
-        self:Notify(GAMEMODE.Lang['DoorNotYours'], 1)
+        self:NotifyError('DoorNotYours')
         return
     end
 
     ent:SetDoorName(name)
 
-    self:Notify(string.format(GAMEMODE.Lang['DoorRenamed'], name))
+    self:NotifyInfo('DoorRenamed', name)
 
     hook.Run("PlayerRenamedDoor", self, ent, name)
 end
 
 function PLAYER:AddDoorOwner(ent, target)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        self:Notify(GAMEMODE.Lang['NotLookingAtDoor'], 1)
+        self:NotifyError('NotLookingAtDoor')
         return
     end
 
     if (!ent:IsDoorMainOwner(self)) then
-        self:Notify(GAMEMODE.Lang['DoorNotYours'], 1)
+        self:NotifyError('DoorNotYours')
         return
     end
 
     if (target == self) then
-        self:Notify(GAMEMODE.Lang['DoorCantAddSelf'], 1)
+        self:NotifyError('DoorCantAddSelf')
         return
     end
 
     if (ent:IsDoorSubOwner(target)) then
-        self:Notify(GAMEMODE.Lang['DoorAlreadySubOwner'], 1)
+        self:NotifyError('DoorAlreadySubOwner')
         return
     end
 
     if (!hook.Run("OnPlayerAddDoorOwner", self, ent, target)) then
-        self:Notify(GAMEMODE.Lang['DoorCantAddOwner'], 1)
+        self:NotifyError('DoorCantAddOwner')
         return
     end
 
     ent:AddDoorSubOwner(target)
 
-    self:Notify(string.format(GAMEMODE.Lang['DoorOwnerAdded'], target:Nick()))
-    target:Notify(string.format(GAMEMODE.Lang['DoorOwnerAddedYou'], self:Nick()))
+    self:NotifyInfo('DoorOwnerAdded', target:Nick())
+    target:NotifyInfo('DoorOwnerAddedYou', self:Nick())
 
     hook.Run("PlayerAddedDoorOwner", self, ent, target)
 end
 
 function PLAYER:RemoveDoorOwner(ent, target)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        self:Notify(GAMEMODE.Lang['NotLookingAtDoor'], 1)
+        self:NotifyError('NotLookingAtDoor')
         return
     end
 
     if (!ent:IsDoorMainOwner(self)) then
-        self:Notify(GAMEMODE.Lang['DoorNotYours'], 1)
+        self:NotifyError('DoorNotYours')
         return
     end
 
     if (!ent:IsDoorSubOwner(target)) then
-        self:Notify(GAMEMODE.Lang['DoorTargetNotSubOwner'], 1)
+        self:NotifyError('DoorTargetNotSubOwner')
         return
     end
 
     ent:RemoveDoorSubOwner(target)
 
-    self:Notify(string.format(GAMEMODE.Lang['DoorOwnerRemoved'], target:Nick()))
-    target:Notify(string.format(GAMEMODE.Lang['DoorOwnerRemovedYou'], self:Nick()))
+    self:NotifyInfo('DoorOwnerRemoved', target:Nick())
+    target:NotifyInfo('DoorOwnerRemovedYou', self:Nick())
 
     hook.Run("PlayerRemovedDoorOwner", self, ent, target)
 end
 
 function PLAYER:LeaveDoor(ent, quiet)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        if (!quiet) then self:Notify(GAMEMODE.Lang['NotLookingAtDoor'], 1) end
+        if (!quiet) then self:NotifyError('NotLookingAtDoor') end
         return
     end
 
     if (!ent:IsDoorSubOwner(self)) then
-        if (!quiet) then self:Notify(GAMEMODE.Lang['DoorNotSubOwner'], 1) end
+        if (!quiet) then self:NotifyError('DoorNotSubOwner') end
         return
     end
 
     ent:RemoveDoorSubOwner(self)
 
-    if (!quiet) then self:Notify(GAMEMODE.Lang['DoorLeft']) end
+    if (!quiet) then self:NotifyInfo('DoorLeft') end
 
     hook.Run("PlayerLeftDoor", self, ent)
 
@@ -203,21 +203,21 @@ function PLAYER:LeaveAllDoors()
     end
 
     if (left > 0) then
-        self:Notify(string.format(GAMEMODE.Lang['DoorsLeft'], left))
+        self:NotifyInfo('DoorsLeft', left)
     end
 
     return left
 end
 
-chat.AddCommand('unown', function(sender)
+roleplay.Chat.AddCommand('unown', function(sender)
     sender:SellDoor(sender:GetEyeTrace().Entity)
 end)
 
-chat.AddCommand('title', function(sender, arguments, noCommand)
+roleplay.Chat.AddCommand('title', function(sender, arguments, noCommand)
     local name = string.Trim(noCommand)
 
     if (name == '') then
-        sender:Notify(GAMEMODE.Lang['DoorNameRequired'], 1)
+        sender:NotifyError('DoorNameRequired')
         return
     end
 
@@ -225,41 +225,41 @@ chat.AddCommand('title', function(sender, arguments, noCommand)
     local length = utf8.len(name)
 
     if (!length or length > limit) then
-        sender:Notify(string.format(GAMEMODE.Lang['DoorNameTooLong'], limit), 1)
+        sender:NotifyError('DoorNameTooLong', limit)
         return
     end
 
     sender:RenameDoor(sender:GetEyeTrace().Entity, name)
 end)
 
-chat.AddCommand('addowner', function(sender, arguments)
-    local target = Player(tonumber(arguments[1]) or -1)
+roleplay.Chat.AddCommand('addowner', function(sender, arguments)
+    local target = roleplay.FindPlayer(arguments[1])
 
-    if (!IsValid(target)) then
-        sender:Notify(GAMEMODE.Lang['PlayerNotFound'], 1)
+    if (!target) then
+        sender:NotifyError('PlayerNotFound')
         return
     end
 
     sender:AddDoorOwner(sender:GetEyeTrace().Entity, target)
 end)
 
-chat.AddCommand('removeowner', function(sender, arguments)
-    local target = Player(tonumber(arguments[1]) or -1)
+roleplay.Chat.AddCommand('removeowner', function(sender, arguments)
+    local target = roleplay.FindPlayer(arguments[1])
 
-    if (!IsValid(target)) then
-        sender:Notify(GAMEMODE.Lang['PlayerNotFound'], 1)
+    if (!target) then
+        sender:NotifyError('PlayerNotFound')
         return
     end
 
     sender:RemoveDoorOwner(sender:GetEyeTrace().Entity, target)
 end)
 
-chat.AddCommand('leavedoor', function(sender)
+roleplay.Chat.AddCommand('leavedoor', function(sender)
     sender:LeaveDoor(sender:GetEyeTrace().Entity)
 end)
 
-chat.AddCommand('leavealldoors', function(sender)
+roleplay.Chat.AddCommand('leavealldoors', function(sender)
     if (sender:LeaveAllDoors() == 0) then
-        sender:Notify(GAMEMODE.Lang['DoorNoSubOwned'], 1)
+        sender:NotifyError('DoorNoSubOwned')
     end
 end)

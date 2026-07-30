@@ -2,13 +2,9 @@ hook.Run("RolePlay.Loading")
 
 include('sh_init.lua')
 
--- База: сетевые переменные, конфиг и локализация, от них зависят все модули
 include('netvars.lua')
 include('config.lua')
 include('lang.lua')
-
--- Команды и профессии: регистратор выполняет файлы из jobs/,
--- поэтому команды (TEAM_*) должны быть объявлены раньше
 include('teams.lua')
 include('sh_jobs.lua')
 include('sh_registrator.lua')
@@ -35,12 +31,33 @@ include('hud/cl_init.lua')
 
 function GM:OnAchievementAchieved() end
 
+function GM:ChatText(index, name, text, messageType)
+    return roleplay.Chat.HiddenTypes[messageType] == true
+end
+
+function GM:HUDShouldDraw(name)
+    return not roleplay.HUD.Hidden[name]
+end
+
+function GM:PlayerBindPress(ply, bind, pressed)
+    return roleplay.Vote.HandleBind(bind, pressed)
+end
+
+function GM:Think()
+    roleplay.HUD.UpdateCursor()
+    roleplay.Vote.Prune()
+end
+
+function GM:HUDPaint()
+    roleplay.HUD.Draw()
+end
+
 net.Receive('notify', function()
     local text = net.ReadString()
-    local type = net.ReadUInt(3)
+    local kind = net.ReadUInt(3)
     local time = net.ReadUInt(5)
 
-    notification.AddLegacy(text, type, time)
+    notification.AddLegacy(text, kind, time)
     surface.PlaySound('buttons/lightswitch2.wav')
 end)
 

@@ -13,6 +13,12 @@ gameinfo.txt
 *.inf
 *.rad
 
+# Fuck ai, dont push this shit to my repo
+.claude/
+CLAUDE.MD
+AGENTS.MD
+CODEX.MD
+
 .vscode/
 .gluarc.json
 

@@ -30,6 +30,8 @@ SWEP.Secondary.Ammo = "none"
 
 SWEP.DoorRange = 70
 
+local KNOCK_DELAYS = {0.2, 0.5}
+
 local FRAMES = {
 	{0.00, {}},
 	{0.30, {
@@ -108,7 +110,7 @@ function SWEP:Knock(door, hard)
 	local ply = self:GetOwner()
 	if IsValid(ply) then ply:RunLuaAnimation(FRAMES) end
 
-	for _, t in ipairs({0.2, 0.5}) do
+	for _, t in ipairs(KNOCK_DELAYS) do
 		timer.Simple(t, function()
 			if not IsValid(door) then return end
             if (hard) then

@@ -1,10 +1,9 @@
 function PLAYER:HasJobFlag(flag)
-    local classTable = player_manager.GetPlayerClassTable(self)
-    local flags = classTable.Flags or {}
-
-    return table.HasValue(flags, flag)
+    return table.HasValue(self:Job().Flags, flag)
 end
 
 function PLAYER:Job()
-    return player_manager.GetPlayerClassTable(self)
+    local id = player_manager.GetPlayerClass(self)
+
+    return (id and roleplay.Jobs[id]) or roleplay.Jobs[GAMEMODE.Config.Defaults.Job]
 end

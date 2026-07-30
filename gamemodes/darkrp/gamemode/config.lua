@@ -7,6 +7,7 @@ GM.Config = {
         MaxDoors = 5,
         MaxDoorNameLength = 16,
         SalaryEverySeconds = 60 * 10,
+        MaxDropMoney = 10000,
         NextJobChange = 60 * 2,
         NextCommand = 2,
         JobVoteSeconds = 20,

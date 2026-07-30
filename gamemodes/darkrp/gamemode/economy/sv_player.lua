@@ -13,9 +13,9 @@ function PLAYER:CanAfford(cost)
 end
 
 function PLAYER:DropMoney(amount)
-    if amount <= 0 then return end
-    if !self:CanAfford(amount) then return end
-    if (!hook.Run('OnPlayerDropMoney', self, amount)) then return end
+    if amount <= 0 then return false end
+    if !self:CanAfford(amount) then return false end
+    if (!hook.Run('OnPlayerDropMoney', self, amount)) then return false end
 
     local trace = util.TraceLine({
         start = self:EyePos(),
@@ -24,7 +24,7 @@ function PLAYER:DropMoney(amount)
     })
 
     local money = ents.Create("money")
-    if not IsValid(money) then return end
+    if not IsValid(money) then return false end
     if self:Alive() then
         money:SetPos(trace.HitPos)
     else
@@ -35,18 +35,22 @@ function PLAYER:DropMoney(amount)
     self:AddMoney(-amount)
 
     hook.Run("PlayerDroppedMoney", self, amount, money)
+
+    return true
 end
 
 function PLAYER:TransferMoney(ply, amount)
-    if amount <= 0 then return end
-    if !self:CanAfford(amount) then return end
-    if !IsValid(ply) then return end
-    if (!hook.Run('OnPlayerTransferMoney', self, ply,amount)) then return end
+    if amount <= 0 then return false end
+    if !self:CanAfford(amount) then return false end
+    if !IsValid(ply) then return false end
+    if (!hook.Run('OnPlayerTransferMoney', self, ply,amount)) then return false end
 
     self:AddMoney(-amount)
     ply:AddMoney(amount)
 
     hook.Run("PlayerTransferedMoney", self, ply,amount)
+
+    return true
 end
 
 function PLAYER:GiveSalary()
@@ -60,69 +64,62 @@ function PLAYER:GiveSalary()
 
     self:AddMoney(salary)
 
-    self:Notify(string.format(GAMEMODE.Lang['SalaryReceived'], salary))
+    self:NotifyInfo('SalaryReceived', salary)
 
     hook.Run("PlayerGotSalary", self, salary)
 
 end
 
-chat.AddCommand('dropmoney', function(sender, arguments)
-    local amount = tonumber(arguments[1])
+roleplay.Chat.AddCommand('dropmoney', function(sender, arguments)
+    local amount = roleplay.ParseAmount(arguments[1])
+
     if (!amount) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
+        sender:ChatError('InvalidAmount')
         return
     end
 
-    amount = math.floor(amount)
-    if (amount <= 0) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
-        return
-    end
-
-    if (amount > 10001) then
-        sender:SendChat(Color(255, 69, 69), string.format(GAMEMODE.Lang['ToManyMoney'],10000))
+    local limit = GAMEMODE.Config.Defaults.MaxDropMoney
+    if (amount > limit) then
+        sender:ChatError('ToManyMoney', limit)
         return
     end
 
     if (!sender:CanAfford(amount)) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NotEnoughMoney'])
+        sender:ChatError('NotEnoughMoney')
         return
     end
 
-    sender:DropMoney(amount)
-    sender:SendChat(Color(61, 213, 61), string.format(GAMEMODE.Lang['MoneyDropped'], amount))
+    if (!sender:DropMoney(amount)) then return end
+
+    sender:SendChat(roleplay.Colors.Money, roleplay.L('MoneyDropped', amount))
 end)
 
-chat.AddCommand('givemoney', function(sender, arguments)
-    local amount = tonumber(arguments[1])
-    if (!amount) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
-        return
-    end
+roleplay.Chat.AddCommand('givemoney', function(sender, arguments)
+    local amount = roleplay.ParseAmount(arguments[1])
 
-    amount = math.floor(amount)
-    if (amount <= 0) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['InvalidAmount'])
+    if (!amount) then
+        sender:ChatError('InvalidAmount')
         return
     end
 
     if (!sender:CanAfford(amount)) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NotEnoughMoney'])
+        sender:ChatError('NotEnoughMoney')
         return
     end
 
     local target = sender:GetEyeTrace().Entity
     if (!IsValid(target) or !target:IsPlayer() or sender:GetPos():Distance(target:GetPos()) > 200) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['NoPlayerInFront'])
+        sender:ChatError('NoPlayerInFront')
         return
     end
 
     if (target == sender) then
-        sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang['CantGiveToSelf'])
+        sender:ChatError('CantGiveToSelf')
         return
     end
 
-    sender:TransferMoney(target, amount)
-    sender:SendChat(Color(69, 255, 69), string.format(GAMEMODE.Lang['MoneyGiven'], amount, target:Nick()))
-    target:SendChat(Color(69, 255, 69), string.format(GAMEMODE.Lang['MoneyReceived'], sender:Nick(), amount))
+    if (!sender:TransferMoney(target, amount)) then return end
+
+    sender:ChatSuccess('MoneyGiven', amount, target:Nick())
+    target:ChatSuccess('MoneyReceived', sender:Nick(), amount)
 end)

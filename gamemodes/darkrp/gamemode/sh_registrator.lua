@@ -1,6 +1,7 @@
 local jobsDir = engine.ActiveGamemode() .. '/gamemode/jobs/'
 local jobFiles = file.Find(jobsDir .. '*.lua', 'LUA')
 
+roleplay.Jobs = {}
 
 for _, fileName in ipairs(jobFiles) do
     local path = 'jobs/' .. fileName
@@ -17,4 +18,6 @@ for _, fileName in ipairs(jobFiles) do
 
     job.ID = string.StripExtension(fileName)
     player_manager.RegisterClass(job.ID, job, 'rp_player')
+
+    roleplay.Jobs[job.ID] = job
 end

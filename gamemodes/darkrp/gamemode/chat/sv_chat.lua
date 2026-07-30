@@ -1,10 +1,10 @@
-GM.ChatCommands = {}
-chat = chat or {}
+roleplay.Chat = roleplay.Chat or {}
+roleplay.Chat.Commands = {}
 
 util.AddNetworkString('chat_message')
 
-function chat.AddCommand(command, fallback)
-    (GAMEMODE or GM).ChatCommands[command] = fallback
+function roleplay.Chat.AddCommand(command, callback)
+    roleplay.Chat.Commands[command] = callback
 end
 
 function PLAYER:SendChat(...)
@@ -27,35 +27,53 @@ function PLAYER:SendChat(...)
     net.Send(self)
 end
 
-function GM:PlayerSay(sender, text, teamChat)
-    if string.StartsWith(text, '/') then
-        local arguments = string.Explode("%s+", text, true)
-        local command = string.lower(string.sub(table.remove(arguments, 1), 2))
-        local noCommand = table.concat(arguments, " ")
+function PLAYER:ChatError(key, ...)
+    self:SendChat(roleplay.Colors.Error, roleplay.L(key, ...))
+end
 
-        local callback = self.ChatCommands[command]
-        if callback != nil then
-            if (hook.Run('OnPlayerChatCommand', sender, command, arguments, noCommand) == false) then
-                return ""
-            end
-            
-            if sender.LastCommand and sender.LastCommand > CurTime() then
-                sender:SendChat(Color(255, 69, 69), GAMEMODE.Lang["StopCommandSpamming"])
-                sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
-                return ""
-            end
+function PLAYER:ChatSuccess(key, ...)
+    self:SendChat(roleplay.Colors.Success, roleplay.L(key, ...))
+end
 
-            sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
+function roleplay.FindPlayer(argument)
+    local ply = Player(tonumber(argument) or -1)
 
-            callback(sender, arguments, noCommand)
+    return IsValid(ply) and ply or nil
+end
 
-            hook.Run('PlayerChatCommand', sender, command, arguments, noCommand)
-        else
-            sender:SendChat(Color(255, 69, 69), self.Lang['CommandNotFound'])
-        end
+function roleplay.ParseAmount(argument)
+    local amount = tonumber(argument)
+    if (!amount) then return nil end
 
+    amount = math.floor(amount)
+    if (amount <= 0) then return nil end
 
-        return ""
+    return amount
+end
+
+function roleplay.Chat.RunCommand(sender, text)
+    local arguments = string.Explode("%s+", text, true)
+    local command = string.lower(string.sub(table.remove(arguments, 1), 2))
+    local noCommand = table.concat(arguments, " ")
+
+    local callback = roleplay.Chat.Commands[command]
+
+    if (callback == nil) then
+        sender:ChatError('CommandNotFound')
+        return
     end
-    return text
+
+    if (hook.Run('OnPlayerChatCommand', sender, command, arguments, noCommand) == false) then return end
+
+    if (sender.LastCommand and sender.LastCommand > CurTime()) then
+        sender:ChatError("StopCommandSpamming")
+        sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
+        return
+    end
+
+    sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
+
+    callback(sender, arguments, noCommand)
+
+    hook.Run('PlayerChatCommand', sender, command, arguments, noCommand)
 end

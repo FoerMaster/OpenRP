@@ -1,11 +1,11 @@
-function GM:ChatText(index, name, text, messageType)
+roleplay.Chat = roleplay.Chat or {}
 
-    if messageType == "joinleave" or
-        messageType == "namechange" or
-        messageType == "servermsg" or
-        messageType == "teamchange" then return true end
-
-end
+roleplay.Chat.HiddenTypes = {
+    ['joinleave'] = true,
+    ['namechange'] = true,
+    ['servermsg'] = true,
+    ['teamchange'] = true
+}
 
 net.Receive('chat_message', function()
     local count = net.ReadUInt(8)

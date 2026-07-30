@@ -20,6 +20,9 @@ function GM:PlayerDisconnected(ply)
 
     ply:SellAllDoors()
     ply:LeaveAllDoors()
+
+    roleplay.CancelJobVotes(ply)
+    roleplay.Vote.Cleanup(ply)
 end
 
 function GM:PlayerLoadout(ply)
@@ -69,8 +72,8 @@ function GM:PhysgunPickup( ply, ent )
 end
 
 function GM:GravGunPickupAllowed( ply, ent )
-    if not IsValid(ent) or ent:IsPlayer() or ent._deathRagdoll then return false end
-    if ent._antilaggFrozen then return true end -- let players recover frozen runaway props
+    if not IsValid(ent) or ent:IsPlayer() then return false end
+
     local phys = ent:GetPhysicsObject()
     return IsValid(phys) and phys:IsMotionEnabled()
 end
@@ -196,24 +199,21 @@ function GM:OnPlayerBecomeJob(ply, job, oldJob)
     local allow = job:CanJoin(ply)
     if allow != nil then return allow end
 
-    -- Считаем по классу, а не через team.NumPlayers: одну команду делят несколько работ
-    if (job.MaxPlayers >= 0) then
-        local count = 0
-
-        for _, other in ipairs(player.GetAll()) do
-            if (player_manager.GetPlayerClass(other) == job.ID) then
-                count = count + 1
-            end
-        end
-
-        if (count >= job.MaxPlayers) then return false end
-    end
+    if (job.MaxPlayers >= 0 and roleplay.CountJobPlayers(job) >= job.MaxPlayers) then return false end
 
     return true
 end
 
 function GM:PlayerBecameJob(ply, job, oldJob)
     player_manager.RunClass(ply, "OnJoined", oldJob)
+end
+
+function GM:PlayerSay(sender, text, teamChat)
+    if (!string.StartsWith(text, '/')) then return text end
+
+    roleplay.Chat.RunCommand(sender, text)
+
+    return ""
 end
 
 function GM:OnPlayerChatCommand(sender,command,arguments, noCmd)
@@ -226,6 +226,14 @@ function PLAYER:Notify(text, type, time)
         net.WriteUInt(type or 0, 3)
         net.WriteUInt(time or 5, 5)
     net.Send(self)
+end
+
+function PLAYER:NotifyError(key, ...)
+    self:Notify(roleplay.L(key, ...), 1)
+end
+
+function PLAYER:NotifyInfo(key, ...)
+    self:Notify(roleplay.L(key, ...), 0)
 end
 
 function GM:ShowTeam(ply)
