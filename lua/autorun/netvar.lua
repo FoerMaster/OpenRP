@@ -1,3 +1,4 @@
+AddCSLuaFile()
 
 if nw then return end
 nw 				= {}

@@ -7,7 +7,7 @@ JOB.MaxHealth = 100
 JOB.StartHealth = 100
 JOB.StartArmor = 50
 JOB.Salary = 750
-JOB.Flags = { JOB_FLAG_CANT_BUY_DOOR }
+JOB.Flags = { JOB_FLAG_CANT_BUY_DOOR, JOB_FLAG_NEED_VOTE }
 JOB.SWEPs = { "weapon_stunstick", "weapon_pistol" }
 JOB.Model = {
     "models/player/police.mdl",

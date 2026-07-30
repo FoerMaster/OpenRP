@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 function file.AutoInclude(path)
     local fileName = string.GetFileFromFilename(path)
     if string.find(fileName, '_sv.lua', 1, true) or string.StartsWith(fileName, 'sv_') then

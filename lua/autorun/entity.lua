@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local doorClasses = {
     ["func_door"] = true,
     ["func_door_rotating"] = true,
