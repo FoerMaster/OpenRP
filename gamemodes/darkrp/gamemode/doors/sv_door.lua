@@ -87,19 +87,13 @@ function ENTITY:ClearDoorSubOwners()
 end
 
 function ENTITY:CanBeChangeNameBy(ply)
-    return self:DoorMainOwner() == ply
+    return self:IsDoorMainOwner(ply)
 end
 
 function ENTITY:CanBeOpenedBy(ply)
 
-    if (self:DoorMainOwner() == ply) then
+    if (self:IsDoorMainOwner(ply) or self:IsDoorSubOwner(ply)) then
         return true
-    end
-
-    for _, subOwner in ipairs(self:DoorSubOwners()) do
-        if (subOwner == ply) then
-            return true
-        end
     end
 
     if (self:DoorTeam() != nil and ply:Team() == self:DoorTeam()) then

@@ -5,6 +5,7 @@ GM.Config = {
         DoorCost = 1200,
         DoorSellPercent = 0.66,
         MaxDoors = 5,
+        MaxDoorNameLength = 16,
         SalaryEverySeconds = 60 * 10,
         NextJobChange = 60 * 2,
         NextCommand = 2,

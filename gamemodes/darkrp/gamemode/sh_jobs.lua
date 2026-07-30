@@ -102,6 +102,18 @@ end
 function DEF_PLY:OnSoldDoor( door, refund )
 end
 
+function DEF_PLY:OnRenamedDoor( door, name )
+end
+
+function DEF_PLY:CanAddDoorOwner( door, target )
+end
+
+function DEF_PLY:OnAddedDoorOwner( door, target )
+end
+
+function DEF_PLY:OnRemovedDoorOwner( door, target )
+end
+
 function DEF_PLY:CanOpenDoor( door )
 end
 

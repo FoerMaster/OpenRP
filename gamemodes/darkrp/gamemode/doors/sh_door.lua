@@ -14,6 +14,14 @@ function ENTITY:DoorMainOwner()
     return ownerSteamID and player.GetBySteamID(ownerSteamID) or NULL
 end
 
+function ENTITY:IsDoorMainOwner(ply)
+    return self:DoorRawData().main_owner == ply:SteamID()
+end
+
+function ENTITY:IsDoorSubOwner(ply)
+    return self:DoorRawData().sub_owners[ply:SteamID()] == true
+end
+
 function ENTITY:DoorName()
     return self:DoorRawData().name
 end

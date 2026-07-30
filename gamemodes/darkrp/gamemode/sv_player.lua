@@ -154,6 +154,26 @@ function GM:PlayerSoldDoor(ply, ent, refund)
     player_manager.RunClass(ply, "OnSoldDoor", ent, refund)
 end
 
+function GM:PlayerRenamedDoor(ply, ent, name)
+    player_manager.RunClass(ply, "OnRenamedDoor", ent, name)
+end
+
+function GM:OnPlayerAddDoorOwner(ply, ent, target)
+    local allow = player_manager.RunClass(ply, "CanAddDoorOwner", ent, target)
+    if allow != nil then return allow end
+    if target:HasJobFlag(JOB_FLAG_CANT_BUY_DOOR) then return false end
+
+    return true
+end
+
+function GM:PlayerAddedDoorOwner(ply, ent, target)
+    player_manager.RunClass(ply, "OnAddedDoorOwner", ent, target)
+end
+
+function GM:PlayerRemovedDoorOwner(ply, ent, target)
+    player_manager.RunClass(ply, "OnRemovedDoorOwner", ent, target)
+end
+
 function GM:PlayerLeftDoor(ply, ent)
     player_manager.RunClass(ply, "OnLeftDoor", ent)
 end

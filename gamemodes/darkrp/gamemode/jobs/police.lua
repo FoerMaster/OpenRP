@@ -16,4 +16,5 @@ JOB.Model = {
 
 function JOB:OnJoined(oldJob)
     self.Player:SellAllDoors()
+    self.Player:LeaveAllDoors()
 end
