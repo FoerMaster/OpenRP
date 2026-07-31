@@ -88,16 +88,19 @@ function GM:CanTool(ply, trace, _)
 end
 
 function GM:PhysgunPickup( ply, ent )
-    if not IsValid(ent) or ent.DontAllowPhysgun or ent:IsPlayer() then return false end
-
-    return ent:IsOwnedBy(ply)
+    return roleplay.CanPhysgun(ply, ent)
 end
 
 function GM:GravGunPickupAllowed( ply, ent )
-    if not IsValid(ent) or ent:IsPlayer() then return false end
+    if (!IsValid(ent) or ent:IsPlayer()) then return false end
 
     local phys = ent:GetPhysicsObject()
+
     return IsValid(phys) and phys:IsMotionEnabled()
+end
+
+function GM:GravGunPunt(ply, ent)
+    return false
 end
 
 function GM:CanPlayerUnfreeze( ply, entity, physobject )

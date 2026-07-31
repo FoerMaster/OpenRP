@@ -18,6 +18,8 @@ local SETTINGS = {
     MinPlayersToDemote = { 'rp_min_players_to_demote', '4', 'Минимум игроков для команды /demote' },
 
     CommandDelay = { 'rp_command_delay', '2', 'Пауза между чат-командами, секунд' },
+    AdvertCost = { 'rp_advert_cost', '1500', 'Цена одного сообщения в /advert' },
+    AdvertDelay = { 'rp_advert_delay', '60', 'Пауза между сообщениями в /advert, секунд' },
     TalkRadius = { 'rp_talk_radius', '300', 'Радиус слышимости текстового чата' },
     VoiceRadius = { 'rp_voice_radius', '300', 'Радиус слышимости голосового чата' },
 
@@ -39,6 +41,16 @@ if (SERVER) then
     }
 
     CreateConVar('rp_default_job', 'citizen', FLAGS + FCVAR_REPLICATED, 'Профессия, выдаваемая при заходе')
+
+    roleplay.Config.Engine = {
+        physcannon_pullforce = '0',
+        physcannon_tracelength = '100',
+        collision_shake_amp = '0',
+        collision_shake_freq = '0',
+        collision_shake_time = '0',
+        sv_alltalk = '0',
+        mp_show_voice_icons = '0'
+    }
 end
 
 roleplay.Config.AllowedProps = {

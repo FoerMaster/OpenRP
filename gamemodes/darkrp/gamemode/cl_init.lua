@@ -27,6 +27,9 @@ include('economy/sh_player.lua')
 -- Двери
 include('doors/sh_door.lua')
 
+-- Строительство
+include('building/sh_aps.lua')
+
 -- Смерть
 include('death/cl_death.lua')
 
@@ -44,6 +47,14 @@ end
 
 function GM:PlayerBindPress(ply, bind, pressed)
     return roleplay.Vote.HandleBind(bind, pressed)
+end
+
+function GM:PhysgunPickup(ply, ent)
+    return roleplay.CanPhysgun(ply, ent)
+end
+
+function GM:GravGunPunt(ply, ent)
+    return false
 end
 
 function GM:Think()

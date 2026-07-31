@@ -2,6 +2,8 @@ local NAME_COLOR = Color(200, 200, 200)
 local TEXT_COLOR = Color(255, 255, 255)
 local PRIVATE_COLOR = Color(255, 130, 220)
 
+local advertReadyAt = {}
+
 local CHANNELS = {
     ic = {
         Local = true
@@ -136,7 +138,34 @@ roleplay.Chat.AddCommand('me', function(sender, arguments, noCommand)
 end)
 
 roleplay.Chat.AddCommand('advert', function(sender, arguments, noCommand)
-    roleplay.Chat.Send(sender, 'advert', noCommand)
+    local text = string.Trim(noCommand)
+
+    if (text == '') then
+        sender:ChatError('ChatEmpty')
+        return
+    end
+
+    local steamID = sender:SteamID()
+    local readyAt = advertReadyAt[steamID]
+
+    if (readyAt and readyAt > CurTime()) then
+        sender:ChatError('AdvertCooldown', math.ceil(readyAt - CurTime()))
+        return
+    end
+
+    local cost = roleplay.Config.AdvertCost:GetInt()
+
+    if (!sender:CanAfford(cost)) then
+        sender:ChatError('NotEnoughMoney')
+        return
+    end
+
+    roleplay.Chat.Send(sender, 'advert', text)
+
+    sender:AddMoney(-cost)
+    advertReadyAt[steamID] = CurTime() + roleplay.Config.AdvertDelay:GetInt()
+
+    sender:SendChat(roleplay.Colors.Money, roleplay.L('AdvertPaid', cost))
 end)
 
 roleplay.Chat.AddCommand('911', function(sender, arguments, noCommand)

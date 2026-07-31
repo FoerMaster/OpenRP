@@ -17,6 +17,7 @@ AddCSLuaFile('sh_registrator.lua')
 AddCSLuaFile('sh_player.lua')
 AddCSLuaFile('economy/sh_player.lua')
 AddCSLuaFile('doors/sh_door.lua')
+AddCSLuaFile('building/sh_aps.lua')
 AddCSLuaFile('chat/cl_chat.lua')
 AddCSLuaFile('vgui/cl_skin.lua')
 AddCSLuaFile('voting/cl_init.lua')
@@ -64,6 +65,7 @@ include('doors/sv_player.lua')
 include('death/sv_death.lua')
 
 -- Строительство
+include('building/sh_aps.lua')
 include('building/sv_player.lua')
 include('building/sv_aps.lua')
 include('building/sv_command.lua')
@@ -71,6 +73,9 @@ include('building/sv_command.lua')
 util.AddNetworkString('notify')
 
 function GM:InitPostEntity()
+    for command, value in pairs(roleplay.Config.Engine) do
+        RunConsoleCommand(command, value)
+    end
 end
 
 hook.Call("RolePlay.Loaded", GM)

@@ -20,7 +20,7 @@ DEF_PLY.AvoidPlayers			= true
 DEF_PLY.UseVMHands			= true
 
 DEF_PLY.SWEPs               = {}
-DEF_PLY.Default_SWEPs       = {"weapon_physgun", "gmod_tool", "keys"}
+DEF_PLY.Default_SWEPs       = {"weapon_physgun", "weapon_physcannon", "gmod_tool", "keys"}
 DEF_PLY.MaxPlayers = -1
 DEF_PLY.Model = {"models/player/odessa.mdl"}
 DEF_PLY.Flags = { }
