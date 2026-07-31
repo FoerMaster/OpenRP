@@ -1,8 +1,7 @@
 roleplay.Death = roleplay.Death or {}
 
 function PLAYER:DropDeathMoney()
-    local config = GAMEMODE.Config.Defaults
-    local amount = math.floor(math.min(self:Money() * config.DeathMoneyPercent, config.DeathMoneyMax))
+    local amount = math.floor(math.min(self:Money() * roleplay.Config.DeathMoneyPercent:GetFloat(), roleplay.Config.DeathMoneyMax:GetInt()))
 
     if (amount <= 0) then return end
 
@@ -29,7 +28,7 @@ function PLAYER:DemoteOnDeath()
     if (!self:HasJobFlag(JOB_FLAG_DEMOTE_ON_DEATH)) then return end
 
     local oldJob = self:Job()
-    local job = roleplay.Jobs[GAMEMODE.Config.Defaults.Job]
+    local job = roleplay.Jobs[roleplay.DefaultJob()]
 
     if (oldJob.ID == job.ID) then return end
 
@@ -46,7 +45,7 @@ function roleplay.Death.Handle(ply)
         ply:CreateRagdoll()
     end
 
-    ply:SetNetVar('respawn_at', CurTime() + GAMEMODE.Config.Defaults.RespawnDelay)
+    ply:SetNetVar('respawn_at', CurTime() + roleplay.Config.RespawnDelay:GetInt())
     ply:DropDeathMoney()
     ply:DemoteOnDeath()
 end

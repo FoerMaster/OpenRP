@@ -64,7 +64,11 @@ GM.Lang = {
     ['DeathMoneyLost'] = "Вы потеряли %s$",
     ['DeathRespawn'] = "Возрождение через %s",
     ['DeathPressKey'] = "Нажмите любую клавишу",
-    ['DemotedOnDeath'] = "Вы потеряли профессию «%s» после смерти"
+    ['DemotedOnDeath'] = "Вы потеряли профессию «%s» после смерти",
+    ['ChatEmpty'] = "Введите текст сообщения!",
+    ['ChatNoReceivers'] = "Сейчас некому принять вызов!",
+    ['ChatAmbiguousName'] = "Под запрос подходит несколько игроков, уточните ник!",
+    ['ChatPrivateSelf'] = "Вы не можете написать самому себе!"
 }
 
 function roleplay.L(key, ...)

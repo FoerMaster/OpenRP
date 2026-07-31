@@ -23,7 +23,7 @@ function PLAYER:BuyDoor(ent)
         return
     end
 
-    local limit = GAMEMODE.Config.Defaults.MaxDoors
+    local limit = roleplay.Config.MaxDoors:GetInt()
     if (self:CountDoors() >= limit) then
         self:NotifyError('DoorLimit', limit)
         return
@@ -35,7 +35,7 @@ function PLAYER:BuyDoor(ent)
         return
     end
 
-    cost = cost or GAMEMODE.Config.Defaults.DoorCost
+    cost = cost or roleplay.Config.DoorCost:GetInt()
     if (!self:CanAfford(cost)) then
         self:NotifyError('NotEnoughMoney')
         return
@@ -67,7 +67,7 @@ function PLAYER:SellDoor(ent, quiet)
         return
     end
 
-    refund = refund or math.floor(GAMEMODE.Config.Defaults.DoorCost * GAMEMODE.Config.Defaults.DoorSellPercent)
+    refund = refund or math.floor(roleplay.Config.DoorCost:GetInt() * roleplay.Config.DoorSellPercent:GetFloat())
 
     self:AddMoney(refund)
     ent:ClearDoorOwnership()
@@ -221,7 +221,7 @@ roleplay.Chat.AddCommand('title', function(sender, arguments, noCommand)
         return
     end
 
-    local limit = GAMEMODE.Config.Defaults.MaxDoorNameLength
+    local limit = roleplay.Config.MaxDoorNameLength:GetInt()
     local length = utf8.len(name)
 
     if (!length or length > limit) then

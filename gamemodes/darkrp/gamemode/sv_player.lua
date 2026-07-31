@@ -5,10 +5,10 @@ function GM:PlayerInitialSpawn(ply, transition)
     ply._OwnedDoors = {}
     ply._SubOwnedDoors = {}
 
-    ply:SetMoney(self.Config.Defaults.Money)
-    player_manager.SetPlayerClass(ply, self.Config.Defaults.Job)
+    ply:SetMoney(roleplay.Config.StartMoney:GetInt())
+    player_manager.SetPlayerClass(ply, roleplay.DefaultJob())
 
-    timer.Create("rp_salary_" .. ply:UserID(), self.Config.Defaults.SalaryEverySeconds, 0, function()
+    timer.Create("rp_salary_" .. ply:UserID(), roleplay.Config.SalaryDelay:GetInt(), 0, function()
         if IsValid(ply) then
             ply:GiveSalary()
         end
@@ -161,7 +161,7 @@ function GM:OnPlayerBuyDoor(ply, ent)
     if canBuy != nil then return canBuy, cost end
     if ply:HasJobFlag(JOB_FLAG_CANT_BUY_DOOR) then return false, 0 end
 
-    return true, self.Config.Defaults.DoorCost
+    return true, roleplay.Config.DoorCost:GetInt()
 end
 
 function GM:PlayerBoughtDoor(ply, ent, cost)
@@ -172,7 +172,7 @@ function GM:OnPlayerSellDoor(ply, ent)
     local canSell, refund = player_manager.RunClass(ply, "CanSellDoor", ent)
     if canSell != nil then return canSell, refund end
 
-    return true, math.floor(self.Config.Defaults.DoorCost * self.Config.Defaults.DoorSellPercent)
+    return true, math.floor(roleplay.Config.DoorCost:GetInt() * roleplay.Config.DoorSellPercent:GetFloat())
 end
 
 function GM:PlayerSoldDoor(ply, ent, refund)
@@ -231,11 +231,24 @@ function GM:PlayerBecameJob(ply, job, oldJob)
 end
 
 function GM:PlayerSay(sender, text, teamChat)
-    if (!string.StartsWith(text, '/')) then return text end
-
-    roleplay.Chat.RunCommand(sender, text)
+    roleplay.Chat.Route(sender, text)
 
     return ""
+end
+
+function GM:PlayerCanHearPlayersVoice(listener, talker)
+    local radius = roleplay.Config.VoiceRadius:GetInt()
+
+    return listener:GetPos():DistToSqr(talker:GetPos()) <= radius * radius, true
+end
+
+function GM:GetFallDamage(ply, speed)
+    local safe = roleplay.Config.SafeFallSpeed:GetInt()
+    if (speed <= safe) then return 0 end
+
+    local range = roleplay.Config.FatalFallSpeed:GetInt() - safe
+
+    return math.min((speed - safe) / range * 100, 100)
 end
 
 function GM:OnPlayerChatCommand(sender,command,arguments, noCmd)

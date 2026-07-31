@@ -78,7 +78,7 @@ roleplay.Chat.AddCommand('dropmoney', function(sender, arguments)
         return
     end
 
-    local limit = GAMEMODE.Config.Defaults.MaxDropMoney
+    local limit = roleplay.Config.MaxDropMoney:GetInt()
     if (amount > limit) then
         sender:ChatError('ToManyMoney', limit)
         return

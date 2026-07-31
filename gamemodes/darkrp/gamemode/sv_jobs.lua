@@ -38,7 +38,7 @@ end
 local function startJobVote(sender, job)
     local id = 'job_vote_' .. sender:UserID()
 
-    local started = roleplay.Vote.Start(id, string.format(GAMEMODE.Lang["JobVoteRequest"], sender:Nick(), job.DisplayName), GAMEMODE.Config.Defaults.JobVoteSeconds, function(yes, no)
+    local started = roleplay.Vote.Start(id, string.format(GAMEMODE.Lang["JobVoteRequest"], sender:Nick(), job.DisplayName), roleplay.Config.JobVoteSeconds:GetInt(), function(yes, no)
         if (!IsValid(sender)) then return end
 
         if (!jobHasFreeSlot(job)) then
@@ -72,11 +72,11 @@ local function startDemoteVote(sender, target, reason)
     local job = target:Job()
     local id = 'demote_vote_' .. target:UserID()
 
-    return roleplay.Vote.Start(id, string.format(GAMEMODE.Lang["DemoteVoteRequest"], sender:Nick(), target:Nick(), job.DisplayName, reason), GAMEMODE.Config.Defaults.DemoteVoteSeconds, function()
+    return roleplay.Vote.Start(id, string.format(GAMEMODE.Lang["DemoteVoteRequest"], sender:Nick(), target:Nick(), job.DisplayName, reason), roleplay.Config.DemoteVoteSeconds:GetInt(), function()
         if (!IsValid(target)) then return end
         if (target:Job().ID != job.ID) then return end
 
-        target:SetJob(roleplay.Jobs[GAMEMODE.Config.Defaults.Job])
+        target:SetJob(roleplay.Jobs[roleplay.DefaultJob()])
         target:ChatError("Demoted", job.DisplayName, reason)
 
         if (!IsValid(sender)) then return end
@@ -113,7 +113,7 @@ roleplay.Chat.AddCommand('become', function(sender, arguments)
             return
         end
 
-        sender.LastJobChange = CurTime() + GAMEMODE.Config.Defaults.NextJobChange
+        sender.LastJobChange = CurTime() + roleplay.Config.JobChangeDelay:GetInt()
 
         startJobVote(sender, job)
         return
@@ -124,7 +124,7 @@ roleplay.Chat.AddCommand('become', function(sender, arguments)
         return
     end
 
-    sender.LastJobChange = CurTime() + GAMEMODE.Config.Defaults.NextJobChange
+    sender.LastJobChange = CurTime() + roleplay.Config.JobChangeDelay:GetInt()
 
     sender:ChatSuccess("JobChanged", job.DisplayName)
 end)
@@ -154,7 +154,7 @@ roleplay.Chat.AddCommand('demote', function(sender, arguments)
         return
     end
 
-    local minPlayers = GAMEMODE.Config.Defaults.MinPlayersToDemote
+    local minPlayers = roleplay.Config.MinPlayersToDemote:GetInt()
 
     if (player.GetCount() < minPlayers) then
         sender:ChatError("NotEnoughPlayersToDemote", minPlayers)

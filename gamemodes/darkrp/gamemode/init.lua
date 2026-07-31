@@ -43,6 +43,7 @@ include('sv_player.lua')
 
 -- Чат
 include('chat/sv_chat.lua')
+include('chat/sv_channels.lua')
 
 -- Голосования
 include('voting/sv_init.lua')

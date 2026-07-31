@@ -10,9 +10,10 @@ function PLAYER:GetCount(class, minus)
 end
 
 function PLAYER:CheckLimit(class)
-    local limit = GAMEMODE.Config.Limits[class]
-    if limit == nil then return false end
+    local cvar = roleplay.Config.Limits[class]
+    if cvar == nil then return false end
 
+    local limit = cvar:GetInt()
     local currentCount = self:GetCount(class)
 
     local check = hook.Run("PlayerCheckLimit", self, class, currentCount, limit)
@@ -77,7 +78,7 @@ function PLAYER:CleanupEntities()
         end
         self._OwnedEntity[entIndex] = nil
     end
-    for class, _ in pairs(GAMEMODE.Config.Limits) do
+    for class, _ in pairs(roleplay.Config.Limits) do
         self._EntityCounts[class] = 0
     end
 end

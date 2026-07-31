@@ -5,5 +5,5 @@ end
 function PLAYER:Job()
     local id = player_manager.GetPlayerClass(self)
 
-    return (id and roleplay.Jobs[id]) or roleplay.Jobs[GAMEMODE.Config.Defaults.Job]
+    return (id and roleplay.Jobs[id]) or roleplay.Jobs[roleplay.DefaultJob()]
 end

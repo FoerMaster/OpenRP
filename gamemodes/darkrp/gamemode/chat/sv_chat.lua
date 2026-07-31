@@ -36,9 +36,27 @@ function PLAYER:ChatSuccess(key, ...)
 end
 
 function roleplay.FindPlayer(argument)
-    local ply = Player(tonumber(argument) or -1)
+    if (!argument or argument == '') then return nil end
 
-    return IsValid(ply) and ply or nil
+    local id = tonumber(argument)
+
+    if (id) then
+        local ply = Player(id)
+        return IsValid(ply) and ply or nil
+    end
+
+    local query = string.lower(argument)
+    local found
+
+    for _, ply in player.Iterator() do
+        if (string.find(string.lower(ply:Nick()), query, 1, true)) then
+            if (found) then return nil, true end
+
+            found = ply
+        end
+    end
+
+    return found
 end
 
 function roleplay.ParseAmount(argument)
@@ -67,11 +85,11 @@ function roleplay.Chat.RunCommand(sender, text)
 
     if (sender.LastCommand and sender.LastCommand > CurTime()) then
         sender:ChatError("StopCommandSpamming")
-        sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
+        sender.LastCommand = CurTime() + roleplay.Config.CommandDelay:GetInt()
         return
     end
 
-    sender.LastCommand = CurTime() + GAMEMODE.Config.Defaults.NextCommand
+    sender.LastCommand = CurTime() + roleplay.Config.CommandDelay:GetInt()
 
     callback(sender, arguments, noCommand)
 
