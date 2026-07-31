@@ -18,7 +18,7 @@ local function close(id, voting)
         end
     end
 
-    if (#pending == 0) then return end
+    if #pending == 0 then return end
 
     net.Start('voting_end')
         net.WriteString(id)
@@ -26,16 +26,16 @@ local function close(id, voting)
 end
 
 function roleplay.Vote.Start(id, requestText, delay, callback, excludePlayers, onFailCallback)
-    if (roleplay.Vote.votings[id]) then return false end
+    if roleplay.Vote.votings[id] then return false end
+    if (!hook.Run('OnVoteStart', id, requestText, delay)) then return false end
 
     local voters = {}
-
     for _, ply in player.Iterator() do
         if (excludePlayers and table.HasValue(excludePlayers, ply)) then continue end
         voters[ply] = true
     end
 
-    if (table.IsEmpty(voters)) then return false end
+    if table.IsEmpty(voters) then return false end
 
     roleplay.Vote.votings[id] = {
         text = requestText,
@@ -55,12 +55,14 @@ function roleplay.Vote.Start(id, requestText, delay, callback, excludePlayers, o
         roleplay.Vote.Finish(id)
     end)
 
+    hook.Run('VoteStarted', id, requestText, delay)
+
     return true
 end
 
 function roleplay.Vote.Finish(id)
     local voting = roleplay.Vote.votings[id]
-    if (!voting) then return end
+    if !voting then return end
 
     roleplay.Vote.votings[id] = nil
     timer.Remove('vote_' .. id)
@@ -69,18 +71,22 @@ function roleplay.Vote.Finish(id)
     local yes, no = 0, 0
 
     for _, choice in pairs(voting.votes) do
-        if (choice) then
+        if choice then
             yes = yes + 1
         else
             no = no + 1
         end
     end
 
-    if (yes > no) then
+    local passed = yes > no
+
+    if passed then
         voting.callback(yes, no)
-    elseif (voting.onFail) then
+    elseif voting.onFail then
         voting.onFail(yes, no)
     end
+
+    hook.Run('VoteFinished', id, yes, no, passed)
 end
 
 function roleplay.Vote.Running(id)
@@ -89,11 +95,13 @@ end
 
 function roleplay.Vote.Cancel(id)
     local voting = roleplay.Vote.votings[id]
-    if (!voting) then return end
+    if !voting then return end
 
     roleplay.Vote.votings[id] = nil
     timer.Remove('vote_' .. id)
     close(id, voting)
+
+    hook.Run('VoteCancelled', id)
 end
 
 net.Receive('voting', function(_, ply)
@@ -101,13 +109,16 @@ net.Receive('voting', function(_, ply)
     local choice = net.ReadBool()
 
     local voting = roleplay.Vote.votings[id]
-    if (!voting) then return end
-    if (!voting.voters[ply]) then return end
-    if (voting.votes[ply] != nil) then return end
+    if !voting then return end
+    if !voting.voters[ply] then return end
+    if voting.votes[ply] != nil then return end
+    if (!hook.Run('OnPlayerVote', ply, id, choice)) then return end
 
     voting.votes[ply] = choice
 
-    if (allVoted(voting)) then
+    hook.Run('PlayerVoted', ply, id, choice)
+
+    if allVoted(voting) then
         roleplay.Vote.Finish(id)
     end
 end)
@@ -117,7 +128,7 @@ function roleplay.Vote.Cleanup(ply)
         voting.voters[ply] = nil
         voting.votes[ply] = nil
 
-        if (allVoted(voting)) then
+        if allVoted(voting) then
             roleplay.Vote.Finish(id)
         end
     end

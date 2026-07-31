@@ -42,7 +42,7 @@ function roleplay.HUD.UpdateCursor()
 
     local show = cursorLocked or input.IsKeyDown(KEY_LALT) or input.IsKeyDown(KEY_C)
 
-    if (show != cursorShown) then
+    if show != cursorShown then
         cursorShown = show
         gui.EnableScreenClicker(show)
     end

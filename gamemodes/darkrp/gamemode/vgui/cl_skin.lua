@@ -6,7 +6,7 @@ local function createFont(family, size, bold)
     local key = family .. size .. (bold and 'B' or 'R')
     local name = FONT_CACHE[key]
 
-    if (name) then return name end
+    if name then return name end
 
     name = 'OpenRP_' .. key
 
@@ -65,14 +65,14 @@ local BUTTON_HOVERED = Color(255, 255, 255, 45)
 local BUTTON_GLOW = Color(28, 91, 232, 30)
 
 function SKIN:PaintButton(panel, w, h)
-    if (panel.m_bBackground == false) then return end
+    if panel.m_bBackground == false then return end
 
     roleplay.Kit.DrawButton(0, 0, w, h, panel:IsEnabled() and color_white or BUTTON_DISABLED)
 
-    if (panel:IsEnabled()) then
+    if panel:IsEnabled() then
         if (panel.Depressed or panel:GetToggle()) then
             roleplay.Kit.DrawButton(0, 0, w, h, BUTTON_PRESSED)
-        elseif (panel.Hovered) then
+        elseif panel.Hovered then
             roleplay.Kit.DrawButton(0, 0, w, h, BUTTON_HOVERED)
         end
     end

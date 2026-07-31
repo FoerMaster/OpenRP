@@ -55,7 +55,7 @@ end
 
 function PLAYER:GiveSalary()
     local job = self:Job()
-    if (job.Salary <= 0) then return end
+    if job.Salary <= 0 then return end
 
     local canGetSalary, salary = hook.Run("OnPlayerGotSalary", self, job.Salary)
     if (!canGetSalary) then return end
@@ -73,23 +73,23 @@ end
 roleplay.Chat.AddCommand('dropmoney', function(sender, arguments)
     local amount = roleplay.ParseAmount(arguments[1])
 
-    if (!amount) then
+    if !amount then
         sender:ChatError('InvalidAmount')
         return
     end
 
     local limit = roleplay.Config.MaxDropMoney:GetInt()
-    if (amount > limit) then
+    if amount > limit then
         sender:ChatError('ToManyMoney', limit)
         return
     end
 
-    if (!sender:CanAfford(amount)) then
+    if !sender:CanAfford(amount) then
         sender:ChatError('NotEnoughMoney')
         return
     end
 
-    if (!sender:DropMoney(amount)) then return end
+    if !sender:DropMoney(amount) then return end
 
     sender:SendChat(roleplay.Colors.Money, roleplay.L('MoneyDropped', amount))
 end)
@@ -97,12 +97,12 @@ end)
 roleplay.Chat.AddCommand('givemoney', function(sender, arguments)
     local amount = roleplay.ParseAmount(arguments[1])
 
-    if (!amount) then
+    if !amount then
         sender:ChatError('InvalidAmount')
         return
     end
 
-    if (!sender:CanAfford(amount)) then
+    if !sender:CanAfford(amount) then
         sender:ChatError('NotEnoughMoney')
         return
     end
@@ -113,12 +113,12 @@ roleplay.Chat.AddCommand('givemoney', function(sender, arguments)
         return
     end
 
-    if (target == sender) then
+    if target == sender then
         sender:ChatError('CantGiveToSelf')
         return
     end
 
-    if (!sender:TransferMoney(target, amount)) then return end
+    if !sender:TransferMoney(target, amount) then return end
 
     sender:ChatSuccess('MoneyGiven', amount, target:Nick())
     target:ChatSuccess('MoneyReceived', sender:Nick(), amount)

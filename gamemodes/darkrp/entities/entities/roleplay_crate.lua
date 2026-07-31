@@ -21,7 +21,7 @@ if SERVER then
 
     function ENT:Drop(amount)
         local ent = ents.Create(self:GetStored())
-        if (!IsValid(ent)) then return nil end
+        if !IsValid(ent) then return nil end
 
         ent:SetPos(self:GetPos() + self:GetUp() * 16)
         ent:SetAngles(AngleRand())
@@ -29,7 +29,7 @@ if SERVER then
         ent:Spawn()
 
         local owner = self:GetRPOwner()
-        if (IsValid(owner)) then
+        if IsValid(owner) then
             owner:AddCount(self:GetStored(), ent)
         end
 
@@ -38,7 +38,7 @@ if SERVER then
 
     function ENT:Use(activator, caller, useType, value)
         if (!IsValid(activator) or !activator:IsPlayer()) then return end
-        if (self:GetCount() < 1) then return end
+        if self:GetCount() < 1 then return end
 
         local owner = self:GetRPOwner()
         if (IsValid(owner) and !owner:CheckLimit(self:GetStored())) then return end
@@ -46,11 +46,11 @@ if SERVER then
         if (!hook.Run('OnPlayerTakeFromCrate', activator, self)) then return end
 
         local ent = self:Drop(1)
-        if (!ent) then return end
+        if !ent then return end
 
         self:SetCount(self:GetCount() - 1)
 
-        if (self:GetCount() < 1) then
+        if self:GetCount() < 1 then
             self:Remove()
         end
 
@@ -59,7 +59,7 @@ if SERVER then
 
     function ENT:OnTakeDamage(dmginfo)
         self:SetHealth(self:Health() - dmginfo:GetDamage())
-        if (self:Health() > 0) then return end
+        if self:Health() > 0 then return end
 
         self:Drop(self:GetCount())
         self:Remove()

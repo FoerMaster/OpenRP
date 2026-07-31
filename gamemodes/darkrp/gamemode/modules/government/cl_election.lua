@@ -27,9 +27,9 @@ local panel
 local rows = {}
 
 function roleplay.Election.Send(candidate)
-    if (state.phase != roleplay.Election.PHASE_VOTING) then return end
-    if (state.revealed) then return end
-    if (!IsValid(candidate)) then return end
+    if state.phase != roleplay.Election.PHASE_VOTING then return end
+    if state.revealed then return end
+    if !IsValid(candidate) then return end
 
     net.Start('election')
         net.WriteEntity(candidate)
@@ -57,7 +57,7 @@ local function buildRow(parent, ply)
 
         draw.SimpleText(IsValid(self.player) and self.player:Nick() or '', FONT_LABEL, ROW_HEIGHT, h * 0.5, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
-        if (state.revealed) then
+        if state.revealed then
             draw.SimpleText(self.votes, FONT_LABEL, w - 10, h * 0.5, VOTES_COLOR, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
         end
     end
@@ -110,18 +110,18 @@ local function build()
 end
 
 local function matches()
-    if (#rows != #state.candidates) then return false end
+    if #rows != #state.candidates then return false end
 
     for i, entry in ipairs(state.candidates) do
-        if (rows[i].player != entry.player) then return false end
+        if rows[i].player != entry.player then return false end
     end
 
     return true
 end
 
 function roleplay.Election.Refresh()
-    if (#state.candidates == 0) then
-        if (IsValid(panel)) then
+    if #state.candidates == 0 then
+        if IsValid(panel) then
             panel:Remove()
         end
 
@@ -129,12 +129,12 @@ function roleplay.Election.Refresh()
         return
     end
 
-    if (!IsValid(panel)) then
+    if !IsValid(panel) then
         panel = build()
         rows = {}
     end
 
-    if (!matches()) then
+    if !matches() then
         panel.list:Clear()
         rows = {}
 
@@ -173,7 +173,7 @@ net.Receive('election', function()
         local ply = net.ReadEntity()
         local votes = revealed and net.ReadUInt(8) or 0
 
-        if (IsValid(ply)) then
+        if IsValid(ply) then
             candidates[#candidates + 1] = { player = ply, votes = votes }
         end
     end

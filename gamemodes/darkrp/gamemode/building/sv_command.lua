@@ -1,5 +1,5 @@
 concommand.Add( "gm_spawn", function(ply, command, arguments)
-    if (ply._SpawnCooldown > CurTime()) then return end
+    if ply._SpawnCooldown > CurTime() then return end
     ply._SpawnCooldown = CurTime() + 0.3
 
     local model = arguments[ 1 ]
@@ -7,7 +7,7 @@ concommand.Add( "gm_spawn", function(ply, command, arguments)
     if ( model == nil ) then return end
 
     -- TODO: вайтлист пока пустой, спавн держится на util.IsValidProp
-    if (!roleplay.Config.AllowedProps[model]) then
+    if !roleplay.Config.AllowedProps[model] then
         ply:NotifyError('PropNotAllowed')
         return
     end

@@ -40,7 +40,7 @@ local SETTINGS = {
     FatalFallSpeed = { 'rp_fatal_fall_speed', '1024', 'Скорость падения со смертельным уроном' }
 }
 
-if (SERVER) then
+if SERVER then
     for key, setting in pairs(SETTINGS) do
         roleplay.Config[key] = CreateConVar(setting[1], setting[2], FLAGS, setting[3])
     end

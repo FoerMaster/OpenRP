@@ -70,7 +70,7 @@ end
 -- а от нее зависят транспорт, JOB:CalcView и WEAPON:CalcView
 function GM:CalcView(ply, origin, angles, fov, znear, zfar)
     local death = roleplay.Death.CalcView(ply)
-    if (death) then return death end
+    if death then return death end
 
     local view = {
         origin = origin,
@@ -82,7 +82,7 @@ function GM:CalcView(ply, origin, angles, fov, znear, zfar)
     }
 
     local vehicle = ply:GetVehicle()
-    if (IsValid(vehicle)) then return hook.Run("CalcVehicleView", vehicle, ply, view) end
+    if IsValid(vehicle) then return hook.Run("CalcVehicleView", vehicle, ply, view) end
 
     player_manager.RunClass(ply, "CalcView", view)
 

@@ -24,7 +24,7 @@ function ENT:Initialize()
         self:SetUseType(SIMPLE_USE)
         self:SetCollisionGroup(self.Buyable and COLLISION_GROUP_NONE or COLLISION_GROUP_DEBRIS_TRIGGER)
 
-        if (self:GetCount() < 1) then
+        if self:GetCount() < 1 then
             self:SetCount(1)
         end
 
@@ -40,9 +40,9 @@ if SERVER then
     end
 
     function ENT:Use(activator, caller, useType, value)
-        if (!self.Buyable) then return end
+        if !self.Buyable then return end
         if (!IsValid(activator) or !activator:IsPlayer()) then return end
-        if (self:OnUsed(activator) == false) then return end
+        if self:OnUsed(activator) == false then return end
 
         self:TakeFromStack(1)
 
@@ -54,7 +54,7 @@ if SERVER then
 
         self:SetCount(left)
 
-        if (left <= 0) then
+        if left <= 0 then
             self:Remove()
         end
     end
@@ -67,12 +67,12 @@ if SERVER then
     end
 
     function ENT:PhysicsCollide(data, collider)
-        if (!self.Buyable) then return end
+        if !self.Buyable then return end
 
         local other = data.HitEntity
         if (!IsValid(other) or other:GetClass() != self:GetClass()) then return end
-        if (self:EntIndex() > other:EntIndex()) then return end
-        if (self:GetRPOwner() != other:GetRPOwner()) then return end
+        if self:EntIndex() > other:EntIndex() then return end
+        if self:GetRPOwner() != other:GetRPOwner() then return end
 
         timer.Simple(0, function()
             if (!IsValid(self) or !IsValid(other)) then return end

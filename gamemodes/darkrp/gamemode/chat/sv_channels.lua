@@ -39,7 +39,7 @@ local function nearby(sender)
     local out = {}
 
     for _, ply in player.Iterator() do
-        if (ply:GetPos():DistToSqr(origin) <= radius * radius) then
+        if ply:GetPos():DistToSqr(origin) <= radius * radius then
             out[#out + 1] = ply
         end
     end
@@ -60,18 +60,18 @@ local function withFlag(sender, flag)
 end
 
 local function receivers(sender, channel)
-    if (channel.Local) then return nearby(sender) end
-    if (channel.Flag) then return withFlag(sender, channel.Flag) end
+    if channel.Local then return nearby(sender) end
+    if channel.Flag then return withFlag(sender, channel.Flag) end
 
     return player.GetAll()
 end
 
 function roleplay.Chat.Send(sender, id, text)
     local channel = CHANNELS[id]
-    if (!channel) then return end
+    if !channel then return end
 
     text = string.Trim(text)
-    if (text == '') then
+    if text == '' then
         sender:ChatError('ChatEmpty')
         return
     end
@@ -82,16 +82,15 @@ function roleplay.Chat.Send(sender, id, text)
     text = custom or text
 
     local targets = receivers(sender, channel)
-
     if (#targets < 2 and channel.Flag) then
         sender:ChatError('ChatNoReceivers')
         return false
     end
 
     for _, ply in ipairs(targets) do
-        if (channel.Action) then
+        if channel.Action then
             ply:SendChat(channel.Color, channel.Tag, sender:Nick() .. ' ' .. text)
-        elseif (channel.Tag) then
+        elseif channel.Tag then
             ply:SendChat(channel.Color, channel.Tag, NAME_COLOR, sender:Nick() .. ': ', color_white, text)
         else
             ply:SendChat(NAME_COLOR, sender:Nick() .. ': ', color_white, text)
@@ -105,7 +104,7 @@ end
 
 function roleplay.Chat.SendPrivate(sender, target, text)
     text = string.Trim(text)
-    if (text == '') then
+    if text == '' then
         sender:ChatError('ChatEmpty')
         return
     end
@@ -116,7 +115,6 @@ function roleplay.Chat.SendPrivate(sender, target, text)
     text = custom or text
 
     local header = string.format('[PM] %s -> %s: ', sender:Nick(), target:Nick())
-
     sender:SendChat(PRIVATE_COLOR, header, color_white, text)
     target:SendChat(PRIVATE_COLOR, header, color_white, text)
 
@@ -127,14 +125,14 @@ end
 
 function roleplay.Chat.Route(sender, text)
     text = string.Trim(text)
-    if (text == '') then return end
+    if text == '' then return end
 
-    if (string.StartsWith(text, '//')) then
+    if string.StartsWith(text, '//') then
         roleplay.Chat.Send(sender, 'ooc', string.sub(text, 3))
         return
     end
 
-    if (string.StartsWith(text, '/')) then
+    if string.StartsWith(text, '/') then
         roleplay.Chat.RunCommand(sender, text)
         return
     end
@@ -157,7 +155,7 @@ end)
 roleplay.Chat.AddCommand('advert', function(sender, arguments, noCommand)
     local text = string.Trim(noCommand)
 
-    if (text == '') then
+    if text == '' then
         sender:ChatError('ChatEmpty')
         return
     end
@@ -172,12 +170,12 @@ roleplay.Chat.AddCommand('advert', function(sender, arguments, noCommand)
 
     local cost = roleplay.Config.AdvertCost:GetInt()
 
-    if (!sender:CanAfford(cost)) then
+    if !sender:CanAfford(cost) then
         sender:ChatError('NotEnoughMoney')
         return
     end
 
-    if (!roleplay.Chat.Send(sender, 'advert', text)) then return end
+    if !roleplay.Chat.Send(sender, 'advert', text) then return end
 
     sender:AddMoney(-cost)
     advertReadyAt[steamID] = CurTime() + roleplay.Config.AdvertDelay:GetInt()
@@ -192,17 +190,17 @@ end)
 roleplay.Chat.AddCommand('pm', function(sender, arguments)
     local target, ambiguous = roleplay.FindPlayer(arguments[1])
 
-    if (ambiguous) then
+    if ambiguous then
         sender:ChatError('ChatAmbiguousName')
         return
     end
 
-    if (!target) then
+    if !target then
         sender:ChatError('PlayerNotFound')
         return
     end
 
-    if (target == sender) then
+    if target == sender then
         sender:ChatError('ChatPrivateSelf')
         return
     end

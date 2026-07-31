@@ -1,11 +1,9 @@
 function PLAYER:SetJob(job)
     local oldJob = self:Job()
     if (oldJob and oldJob.ID == job.ID) then return false end
-
     if (!hook.Run("OnPlayerBecomeJob", self, job, oldJob)) then return false end
 
     player_manager.SetPlayerClass(self, job.ID)
-
     self:Spawn()
 
     hook.Run("PlayerBecameJob", self, job, oldJob)
@@ -17,7 +15,7 @@ function roleplay.CountJobPlayers(job)
     local count = 0
 
     for _, ply in player.Iterator() do
-        if (player_manager.GetPlayerClass(ply) == job.ID) then
+        if player_manager.GetPlayerClass(ply) == job.ID then
             count = count + 1
         end
     end
@@ -26,7 +24,7 @@ function roleplay.CountJobPlayers(job)
 end
 
 function roleplay.JobHasFreeSlot(job)
-    if (job.MaxPlayers < 0) then return true end
+    if job.MaxPlayers < 0 then return true end
 
     return roleplay.CountJobPlayers(job) < job.MaxPlayers
 end
@@ -47,27 +45,27 @@ local function startJobVote(sender, job)
     local id = roleplay.JobVoteID(sender)
 
     local started = roleplay.Vote.Start(id, roleplay.L('JobVoteRequest', sender:Nick(), job.DisplayName), roleplay.Config.JobVoteSeconds:GetInt(), function(yes, no)
-        if (!IsValid(sender)) then return end
+        if !IsValid(sender) then return end
 
-        if (!roleplay.JobHasFreeSlot(job)) then
+        if !roleplay.JobHasFreeSlot(job) then
             sender:ChatError("JobNoFreeSlots")
             return
         end
 
-        if (!sender:SetJob(job)) then
+        if !sender:SetJob(job) then
             sender:ChatError("CantBecomeJob")
             return
         end
 
         sender:ChatSuccess("JobChanged", job.DisplayName)
     end, { sender }, function(yes, no)
-        if (!IsValid(sender)) then return end
+        if !IsValid(sender) then return end
 
         sender:ChatError("JobVoteRejected", job.DisplayName)
     end)
 
-    if (!started) then
-        if (!sender:SetJob(job)) then
+    if !started then
+        if !sender:SetJob(job) then
             sender:ChatError("CantBecomeJob")
             return
         end
@@ -81,12 +79,12 @@ local function startDemoteVote(sender, target, reason)
     local id = roleplay.DemoteVoteID(target)
 
     local started = roleplay.Vote.Start(id, roleplay.L('DemoteVoteRequest', sender:Nick(), target:Nick(), job.DisplayName, reason), roleplay.Config.DemoteVoteSeconds:GetInt(), function()
-        if (!IsValid(target)) then return end
+        if !IsValid(target) then return end
 
         target:SetJob(roleplay.Jobs[roleplay.DefaultJob()])
         target:ChatError("Demoted", job.DisplayName, reason)
 
-        if (!IsValid(sender)) then return end
+        if !IsValid(sender) then return end
 
         sender:ChatSuccess("PlayerDemoted", target:Nick(), job.DisplayName)
     end, { sender, target }, function()
@@ -101,7 +99,7 @@ end
 roleplay.Chat.AddCommand('become', function(sender, arguments)
     local job = roleplay.Jobs[string.lower(tostring(arguments[1]))]
 
-    if (!job) then
+    if !job then
         sender:ChatError("InvalidJob")
         return
     end
@@ -111,59 +109,55 @@ roleplay.Chat.AddCommand('become', function(sender, arguments)
         return
     end
 
-    if (table.HasValue(job.Flags, JOB_FLAG_ELECTION)) then
+    if table.HasValue(job.Flags, JOB_FLAG_ELECTION) then
         roleplay.Election.Request(sender, job)
         return
     end
 
-    if (table.HasValue(job.Flags, JOB_FLAG_NEED_VOTE)) then
-        if (!roleplay.JobHasFreeSlot(job)) then
+    if table.HasValue(job.Flags, JOB_FLAG_NEED_VOTE) then
+        if !roleplay.JobHasFreeSlot(job) then
             sender:ChatError("JobNoFreeSlots")
             return
         end
 
-        if (!canJoinJob(sender, job)) then
+        if !canJoinJob(sender, job) then
             sender:ChatError("CantBecomeJob")
             return
         end
 
         sender.LastJobChange = CurTime() + roleplay.Config.JobChangeDelay:GetInt()
-
         startJobVote(sender, job)
         return
     end
 
-    if (!sender:SetJob(job)) then
+    if !sender:SetJob(job) then
         sender:ChatError("CantBecomeJob")
         return
     end
 
     sender.LastJobChange = CurTime() + roleplay.Config.JobChangeDelay:GetInt()
-
     sender:ChatSuccess("JobChanged", job.DisplayName)
 end)
 
 roleplay.Chat.AddCommand('demote', function(sender, arguments)
     local target = roleplay.FindPlayer(arguments[1])
-
-    if (!target) then
+    if !target then
         sender:ChatError("PlayerNotFound")
         return
     end
 
-    if (target == sender) then
+    if target == sender then
         sender:ChatError("CantDemoteSelf")
         return
     end
 
     local reason = string.Trim(table.concat(arguments, ' ', 2))
-
-    if (reason == '') then
+    if reason == '' then
         sender:ChatError("DemoteReasonRequired")
         return
     end
 
-    if (target:HasJobFlag(JOB_FLAG_UNDISMISSABLE)) then
+    if target:HasJobFlag(JOB_FLAG_UNDISMISSABLE) then
         sender:ChatError("CantDemoteJob")
         return
     end
@@ -174,27 +168,23 @@ roleplay.Chat.AddCommand('demote', function(sender, arguments)
     end
 
     local readyAt = (target._JobJoinedAt or 0) + roleplay.Config.DemoteImmunity:GetInt()
-
-    if (readyAt > CurTime()) then
+    if readyAt > CurTime() then
         sender:ChatError("DemoteTooEarly", math.ceil(readyAt - CurTime()))
         return
     end
 
     local minPlayers = roleplay.Config.MinPlayersToDemote:GetInt()
-
-    if (player.GetCount() < minPlayers) then
+    if player.GetCount() < minPlayers then
         sender:ChatError("NotEnoughPlayersToDemote", minPlayers)
         return
     end
 
     local id = startDemoteVote(sender, target, reason)
-
-    if (!id) then
+    if !id then
         sender:ChatError("DemoteVoteAlreadyStarted")
         return
     end
 
     sender._DemoteVote = id
-
     sender:ChatSuccess("DemoteVoteStarted", target:Nick())
 end)

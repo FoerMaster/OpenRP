@@ -13,7 +13,7 @@ function PLAYER:BuyDoor(ent)
         return
     end
 
-    if (ent:DoorRawData().main_owner != nil) then
+    if ent:DoorRawData().main_owner != nil then
         self:NotifyError('DoorAlreadyOwned')
         return
     end
@@ -24,7 +24,7 @@ function PLAYER:BuyDoor(ent)
     end
 
     local limit = roleplay.Config.MaxDoors:GetInt()
-    if (self:CountDoors() >= limit) then
+    if self:CountDoors() >= limit then
         self:NotifyError('DoorLimit', limit)
         return
     end
@@ -36,7 +36,7 @@ function PLAYER:BuyDoor(ent)
     end
 
     cost = cost or roleplay.Config.DoorCost:GetInt()
-    if (!self:CanAfford(cost)) then
+    if !self:CanAfford(cost) then
         self:NotifyError('NotEnoughMoney')
         return
     end
@@ -52,18 +52,18 @@ end
 
 function PLAYER:SellDoor(ent, quiet)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        if (!quiet) then self:NotifyError('NotLookingAtDoor') end
+        if !quiet then self:NotifyError('NotLookingAtDoor') end
         return
     end
 
-    if (!ent:IsDoorMainOwner(self)) then
-        if (!quiet) then self:NotifyError('DoorNotYours') end
+    if !ent:IsDoorMainOwner(self) then
+        if !quiet then self:NotifyError('DoorNotYours') end
         return
     end
 
     local canSell, refund = hook.Run("OnPlayerSellDoor", self, ent)
     if (!canSell) then
-        if (!quiet) then self:NotifyError('DoorCantSell') end
+        if !quiet then self:NotifyError('DoorCantSell') end
         return
     end
 
@@ -73,7 +73,7 @@ function PLAYER:SellDoor(ent, quiet)
     ent:ClearDoorOwnership()
     self._OwnedDoors[ent] = nil
 
-    if (!quiet) then self:NotifyInfo('DoorSold', refund) end
+    if !quiet then self:NotifyInfo('DoorSold', refund) end
 
     hook.Run("PlayerSoldDoor", self, ent, refund)
 
@@ -86,13 +86,13 @@ function PLAYER:SellAllDoors()
     for ent in pairs(table.Copy(self._OwnedDoors)) do
         local refund = self:SellDoor(ent, true)
 
-        if (refund) then
+        if refund then
             sold = sold + 1
             total = total + refund
         end
     end
 
-    if (sold > 0) then
+    if sold > 0 then
         self:NotifyInfo('DoorsSold', sold, total)
     end
 end
@@ -103,7 +103,7 @@ function PLAYER:RenameDoor(ent, name)
         return
     end
 
-    if (!ent:CanBeChangeNameBy(self)) then
+    if !ent:CanBeChangeNameBy(self) then
         self:NotifyError('DoorNotYours')
         return
     end
@@ -121,17 +121,17 @@ function PLAYER:AddDoorOwner(ent, target)
         return
     end
 
-    if (!ent:IsDoorMainOwner(self)) then
+    if !ent:IsDoorMainOwner(self) then
         self:NotifyError('DoorNotYours')
         return
     end
 
-    if (target == self) then
+    if target == self then
         self:NotifyError('DoorCantAddSelf')
         return
     end
 
-    if (ent:IsDoorSubOwner(target)) then
+    if ent:IsDoorSubOwner(target) then
         self:NotifyError('DoorAlreadySubOwner')
         return
     end
@@ -155,12 +155,12 @@ function PLAYER:RemoveDoorOwner(ent, target)
         return
     end
 
-    if (!ent:IsDoorMainOwner(self)) then
+    if !ent:IsDoorMainOwner(self) then
         self:NotifyError('DoorNotYours')
         return
     end
 
-    if (!ent:IsDoorSubOwner(target)) then
+    if !ent:IsDoorSubOwner(target) then
         self:NotifyError('DoorTargetNotSubOwner')
         return
     end
@@ -175,18 +175,18 @@ end
 
 function PLAYER:LeaveDoor(ent, quiet)
     if (!IsValid(ent) or !ent:IsDoor()) then
-        if (!quiet) then self:NotifyError('NotLookingAtDoor') end
+        if !quiet then self:NotifyError('NotLookingAtDoor') end
         return
     end
 
-    if (!ent:IsDoorSubOwner(self)) then
-        if (!quiet) then self:NotifyError('DoorNotSubOwner') end
+    if !ent:IsDoorSubOwner(self) then
+        if !quiet then self:NotifyError('DoorNotSubOwner') end
         return
     end
 
     ent:RemoveDoorSubOwner(self)
 
-    if (!quiet) then self:NotifyInfo('DoorLeft') end
+    if !quiet then self:NotifyInfo('DoorLeft') end
 
     hook.Run("PlayerLeftDoor", self, ent)
 
@@ -197,12 +197,12 @@ function PLAYER:LeaveAllDoors()
     local left = 0
 
     for ent in pairs(table.Copy(self._SubOwnedDoors)) do
-        if (self:LeaveDoor(ent, true)) then
+        if self:LeaveDoor(ent, true) then
             left = left + 1
         end
     end
 
-    if (left > 0) then
+    if left > 0 then
         self:NotifyInfo('DoorsLeft', left)
     end
 
@@ -216,7 +216,7 @@ end)
 roleplay.Chat.AddCommand('title', function(sender, arguments, noCommand)
     local name = string.Trim(noCommand)
 
-    if (name == '') then
+    if name == '' then
         sender:NotifyError('DoorNameRequired')
         return
     end
@@ -235,7 +235,7 @@ end)
 roleplay.Chat.AddCommand('addowner', function(sender, arguments)
     local target = roleplay.FindPlayer(arguments[1])
 
-    if (!target) then
+    if !target then
         sender:NotifyError('PlayerNotFound')
         return
     end
@@ -246,7 +246,7 @@ end)
 roleplay.Chat.AddCommand('removeowner', function(sender, arguments)
     local target = roleplay.FindPlayer(arguments[1])
 
-    if (!target) then
+    if !target then
         sender:NotifyError('PlayerNotFound')
         return
     end
@@ -259,7 +259,7 @@ roleplay.Chat.AddCommand('leavedoor', function(sender)
 end)
 
 roleplay.Chat.AddCommand('leavealldoors', function(sender)
-    if (sender:LeaveAllDoors() == 0) then
+    if sender:LeaveAllDoors() == 0 then
         sender:NotifyError('DoorNoSubOwned')
     end
 end)

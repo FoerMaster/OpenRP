@@ -54,7 +54,7 @@ local function fit(text, width)
 
         if (line == '' or surface.GetTextSize(test) <= limit) then
             line = test
-        elseif (lines == MAX_LINES) then
+        elseif lines == MAX_LINES then
             table.insert(out, line .. '…')
             return table.concat(out, '\n'), MAX_LINES * lineHeight
         else
@@ -92,7 +92,7 @@ local function build()
     panel.time:SetFont(META_FONT)
     panel.time.Think = function(self)
         local voting = roleplay.Vote.Active()
-        if (!voting) then return end
+        if !voting then return end
 
         self:SetText(roleplay.L('VoteSeconds', math.ceil(math.max(voting.endsAt - CurTime(), 0))))
         self:SizeToContents()
@@ -138,14 +138,14 @@ end
 function roleplay.Vote.Refresh()
     local voting = roleplay.Vote.Active()
 
-    if (!voting) then
-        if (IsValid(roleplay.Vote.panel)) then
+    if !voting then
+        if IsValid(roleplay.Vote.panel) then
             roleplay.Vote.panel:Remove()
         end
         return
     end
 
-    if (!IsValid(roleplay.Vote.panel)) then
+    if !IsValid(roleplay.Vote.panel) then
         roleplay.Vote.panel = build()
     end
 
@@ -162,7 +162,7 @@ end
 
 function roleplay.Vote.Remove(id)
     for i, voting in ipairs(roleplay.Vote.votings) do
-        if (voting.id == id) then
+        if voting.id == id then
             table.remove(roleplay.Vote.votings, i)
             roleplay.Vote.Refresh()
             return
@@ -174,20 +174,20 @@ function roleplay.Vote.Prune()
     local changed = false
 
     for i = #roleplay.Vote.votings, 1, -1 do
-        if (roleplay.Vote.votings[i].endsAt <= CurTime()) then
+        if roleplay.Vote.votings[i].endsAt <= CurTime() then
             table.remove(roleplay.Vote.votings, i)
             changed = true
         end
     end
 
-    if (changed) then
+    if changed then
         roleplay.Vote.Refresh()
     end
 end
 
 function roleplay.Vote.Send(choice)
     local voting = roleplay.Vote.Active()
-    if (!voting) then return end
+    if !voting then return end
 
     net.Start('voting')
         net.WriteString(voting.id)
@@ -222,12 +222,12 @@ end)
 function roleplay.Vote.HandleBind(bind, pressed)
     if (!roleplay.Vote.Active() or !pressed) then return end
 
-    if (bind == 'gm_showhelp') then
+    if bind == 'gm_showhelp' then
         roleplay.Vote.Send(true)
         return true
     end
 
-    if (bind == 'gm_showteam') then
+    if bind == 'gm_showteam' then
         roleplay.Vote.Send(false)
         return true
     end

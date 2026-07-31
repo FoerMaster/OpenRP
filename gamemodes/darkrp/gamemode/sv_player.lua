@@ -132,7 +132,7 @@ function GM:PhysgunDrop( ply, ent )
     end
 
     local phys = ent:GetPhysicsObject()
-    if (IsValid(phys)) then
+    if IsValid(phys) then
         phys:EnableMotion(false)
         phys:SetDragCoefficient(0)
         phys:SetMass(0)
@@ -281,7 +281,7 @@ function GM:OnPlayerBecomeJob(ply, job, oldJob)
     local allow = job:CanJoin(ply)
     if allow != nil then return allow end
 
-    if (!roleplay.JobHasFreeSlot(job)) then return false end
+    if !roleplay.JobHasFreeSlot(job) then return false end
 
     return true
 end
@@ -367,7 +367,7 @@ end
 
 function GM:GetFallDamage(ply, speed)
     local safe = roleplay.Config.SafeFallSpeed:GetInt()
-    if (speed <= safe) then return 0 end
+    if speed <= safe then return 0 end
 
     local range = roleplay.Config.FatalFallSpeed:GetInt() - safe
 

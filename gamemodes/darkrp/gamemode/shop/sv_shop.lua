@@ -9,8 +9,8 @@ end
 
 function roleplay.Shop.Setup()
     for class in pairs(scripted_ents.GetList()) do
-        if (roleplay.Config.Limits[class]) then continue end
-        if (!roleplay.Shop.Get(class)) then continue end
+        if roleplay.Config.Limits[class] then continue end
+        if !roleplay.Shop.Get(class) then continue end
 
         roleplay.Config.Limits[class] = CreateConVar('rp_limit_' .. class, '1',
             FCVAR_ARCHIVE + FCVAR_NOTIFY, 'Сколько предметов ' .. class .. ' может держать игрок')
@@ -20,7 +20,7 @@ end
 function roleplay.Shop.CanBuy(ply, class)
     local item = roleplay.Shop.Get(class)
 
-    if (!item) then
+    if !item then
         ply:ChatError('ShopUnknownItem')
         return nil
     end
@@ -30,7 +30,7 @@ function roleplay.Shop.CanBuy(ply, class)
         return nil
     end
 
-    if (!ply:CheckLimit(class)) then return nil end
+    if !ply:CheckLimit(class) then return nil end
 
     return item
 end
@@ -47,7 +47,7 @@ end
 
 function roleplay.Shop.Place(ply, class, count)
     local ent = ents.Create(class)
-    if (!IsValid(ent)) then return nil end
+    if !IsValid(ent) then return nil end
 
     ent:SetPos(spawnPosition(ply))
     ent:SetAngles(Angle(0, ply:EyeAngles().yaw + 180, 0))
@@ -59,24 +59,23 @@ end
 
 function roleplay.Shop.Buy(ply, class)
     local item = roleplay.Shop.CanBuy(ply, class)
-    if (!item) then return end
+    if !item then return end
 
     local allow, price = hook.Run('OnPlayerBuyEntity', ply, class, item.Price or 0)
     if (!allow) then return end
 
     price = math.floor(price)
 
-    if (!ply:CanAfford(price)) then
+    if !ply:CanAfford(price) then
         ply:ChatError('NotEnoughMoney')
         return
     end
 
     local ent = roleplay.Shop.Place(ply, class, 1)
-    if (!IsValid(ent)) then return end
+    if !IsValid(ent) then return end
 
     ply:AddCount(class, ent)
     ply:AddMoney(-price)
-
     ply:SendChat(roleplay.Colors.Money, roleplay.L('ShopBought', item.PrintName or class, price))
 
     hook.Run('PlayerBoughtEntity', ply, class, ent, price)
@@ -84,9 +83,9 @@ end
 
 function roleplay.Shop.BuyShip(ply, class)
     local item = roleplay.Shop.CanBuy(ply, class)
-    if (!item) then return end
+    if !item then return end
 
-    if (!item.CanBuyShip) then
+    if !item.CanBuyShip then
         ply:ChatError('ShopNoShip')
         return
     end
@@ -99,19 +98,17 @@ function roleplay.Shop.BuyShip(ply, class)
 
     price = math.floor(price)
 
-    if (!ply:CanAfford(price)) then
+    if !ply:CanAfford(price) then
         ply:ChatError('NotEnoughMoney')
         return
     end
 
     local crate = roleplay.Shop.Place(ply, 'roleplay_crate', count)
-    if (!IsValid(crate)) then return end
+    if !IsValid(crate) then return end
 
     crate:SetStored(class)
-
     ply:AddCount(class, crate)
     ply:AddMoney(-price)
-
     ply:SendChat(roleplay.Colors.Money, roleplay.L('ShopBoughtShip', item.PrintName or class, count, price))
 
     hook.Run('PlayerBoughtEntityShip', ply, class, crate, price, count)

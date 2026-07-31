@@ -85,6 +85,7 @@ GM.Lang = {
     ['ElectionClosed'] = "Прием кандидатов уже закрыт!",
     ['ElectionFull'] = "Больше кандидатов не принимается!",
     ['ElectionBusy'] = "Сейчас идут выборы на другую должность!",
+    ['CantBecomeCandidate'] = "Вы не можете выдвинуть свою кандидатуру!",
     ['ShopUnknownItem'] = "Такого предмета нет в продаже!",
     ['ShopWrongJob'] = "Ваша профессия не может это купить!",
     ['ShopNoShip'] = "Этот предмет не продается ящиком!",
@@ -96,7 +97,7 @@ GM.Lang = {
 function roleplay.L(key, ...)
     local text = GAMEMODE.Lang[key] or key
 
-    if (select('#', ...) == 0) then return text end
+    if select('#', ...) == 0 then return text end
 
     return string.format(text, ...)
 end

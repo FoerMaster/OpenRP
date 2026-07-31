@@ -46,7 +46,7 @@ function roleplay.FindPlayer(argument)
 
     local id = tonumber(argument)
 
-    if (id) then
+    if id then
         local ply = Player(id)
         return IsValid(ply) and ply or nil
     end
@@ -55,8 +55,8 @@ function roleplay.FindPlayer(argument)
     local found
 
     for _, ply in player.Iterator() do
-        if (string.find(string.lower(ply:Nick()), query, 1, true)) then
-            if (found) then return nil, true end
+        if string.find(string.lower(ply:Nick()), query, 1, true) then
+            if found then return nil, true end
 
             found = ply
         end
@@ -67,10 +67,10 @@ end
 
 function roleplay.ParseAmount(argument)
     local amount = tonumber(argument)
-    if (!amount) then return nil end
+    if !amount then return nil end
 
     amount = math.floor(amount)
-    if (amount <= 0) then return nil end
+    if amount <= 0 then return nil end
 
     return amount
 end
@@ -82,7 +82,7 @@ function roleplay.Chat.RunCommand(sender, text)
 
     local callback = roleplay.Chat.Commands[command]
 
-    if (callback == nil) then
+    if callback == nil then
         sender:ChatError('CommandNotFound')
         return
     end

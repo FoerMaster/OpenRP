@@ -113,7 +113,7 @@ function SWEP:Knock(door, hard)
 	for _, t in ipairs(KNOCK_DELAYS) do
 		timer.Simple(t, function()
 			if not IsValid(door) then return end
-            if (hard) then
+            if hard then
                 door:EmitSound("physics/wood/wood_crate_impact_hard1.wav", 80, math.random(120, 175))
             else
                 door:EmitSound("physics/wood/wood_crate_impact_hard2.wav", 80, math.random(120, 175))

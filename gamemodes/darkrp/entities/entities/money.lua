@@ -6,7 +6,7 @@ ENT.PrintName = "Деньги"
 ENT.Model     = "models/openrp/money_00.mdl"
 
 function ENT:Initialize()
-    if (self:GetAmount() > 1000) then
+    if self:GetAmount() > 1000 then
         self.Model = "models/openrp/money_01.mdl"
     end
 
