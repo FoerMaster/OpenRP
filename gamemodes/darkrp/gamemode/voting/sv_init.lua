@@ -83,6 +83,10 @@ function roleplay.Vote.Finish(id)
     end
 end
 
+function roleplay.Vote.Running(id)
+    return roleplay.Vote.votings[id] != nil
+end
+
 function roleplay.Vote.Cancel(id)
     local voting = roleplay.Vote.votings[id]
     if (!voting) then return end

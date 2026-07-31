@@ -35,8 +35,16 @@ local function canJoinJob(ply, job)
     return hook.Run("OnPlayerBecomeJob", ply, job, ply:Job()) != false
 end
 
+function roleplay.JobVoteID(ply)
+    return 'job_vote_' .. ply:UserID()
+end
+
+function roleplay.DemoteVoteID(ply)
+    return 'demote_vote_' .. ply:UserID()
+end
+
 local function startJobVote(sender, job)
-    local id = 'job_vote_' .. sender:UserID()
+    local id = roleplay.JobVoteID(sender)
 
     local started = roleplay.Vote.Start(id, roleplay.L('JobVoteRequest', sender:Nick(), job.DisplayName), roleplay.Config.JobVoteSeconds:GetInt(), function(yes, no)
         if (!IsValid(sender)) then return end
@@ -70,11 +78,10 @@ end
 
 local function startDemoteVote(sender, target, reason)
     local job = target:Job()
-    local id = 'demote_vote_' .. target:UserID()
+    local id = roleplay.DemoteVoteID(target)
 
-    return roleplay.Vote.Start(id, roleplay.L('DemoteVoteRequest', sender:Nick(), target:Nick(), job.DisplayName, reason), roleplay.Config.DemoteVoteSeconds:GetInt(), function()
+    local started = roleplay.Vote.Start(id, roleplay.L('DemoteVoteRequest', sender:Nick(), target:Nick(), job.DisplayName, reason), roleplay.Config.DemoteVoteSeconds:GetInt(), function()
         if (!IsValid(target)) then return end
-        if (target:Job().ID != job.ID) then return end
 
         target:SetJob(roleplay.Jobs[roleplay.DefaultJob()])
         target:ChatError("Demoted", job.DisplayName, reason)
@@ -87,6 +94,8 @@ local function startDemoteVote(sender, target, reason)
 
         sender:ChatError("DemoteVoteRejected", target:Nick())
     end)
+
+    return started and id
 end
 
 roleplay.Chat.AddCommand('become', function(sender, arguments)
@@ -159,6 +168,18 @@ roleplay.Chat.AddCommand('demote', function(sender, arguments)
         return
     end
 
+    if (sender._DemoteVote and roleplay.Vote.Running(sender._DemoteVote)) then
+        sender:ChatError("DemoteVoteYoursRunning")
+        return
+    end
+
+    local readyAt = (target._JobJoinedAt or 0) + roleplay.Config.DemoteImmunity:GetInt()
+
+    if (readyAt > CurTime()) then
+        sender:ChatError("DemoteTooEarly", math.ceil(readyAt - CurTime()))
+        return
+    end
+
     local minPlayers = roleplay.Config.MinPlayersToDemote:GetInt()
 
     if (player.GetCount() < minPlayers) then
@@ -166,15 +187,14 @@ roleplay.Chat.AddCommand('demote', function(sender, arguments)
         return
     end
 
-    if (!startDemoteVote(sender, target, reason)) then
+    local id = startDemoteVote(sender, target, reason)
+
+    if (!id) then
         sender:ChatError("DemoteVoteAlreadyStarted")
         return
     end
 
+    sender._DemoteVote = id
+
     sender:ChatSuccess("DemoteVoteStarted", target:Nick())
 end)
-
-function roleplay.CancelJobVotes(ply)
-    roleplay.Vote.Cancel('job_vote_' .. ply:UserID())
-    roleplay.Vote.Cancel('demote_vote_' .. ply:UserID())
-end

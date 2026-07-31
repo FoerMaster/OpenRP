@@ -23,7 +23,8 @@ function GM:PlayerDisconnected(ply)
     ply:SellAllDoors()
     ply:LeaveAllDoors()
 
-    roleplay.CancelJobVotes(ply)
+    roleplay.Vote.Cancel(roleplay.JobVoteID(ply))
+    roleplay.Vote.Cancel(roleplay.DemoteVoteID(ply))
     roleplay.Vote.Cleanup(ply)
     roleplay.Election.Cleanup(ply)
 end
@@ -233,6 +234,10 @@ function GM:OnPlayerBecomeJob(ply, job, oldJob)
 end
 
 function GM:PlayerBecameJob(ply, job, oldJob)
+    ply._JobJoinedAt = CurTime()
+
+    roleplay.Vote.Cancel(roleplay.DemoteVoteID(ply))
+
     player_manager.RunClass(ply, "OnJoined", oldJob)
 end
 

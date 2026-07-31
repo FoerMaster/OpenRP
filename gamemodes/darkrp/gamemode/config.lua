@@ -16,6 +16,7 @@ local SETTINGS = {
     JobVoteSeconds = { 'rp_job_vote_seconds', '20', 'Время голосования за устройство на работу' },
     DemoteVoteSeconds = { 'rp_demote_vote_seconds', '30', 'Время голосования за увольнение' },
     MinPlayersToDemote = { 'rp_min_players_to_demote', '4', 'Минимум игроков для команды /demote' },
+    DemoteImmunity = { 'rp_demote_immunity', '300', 'Сколько игрока нельзя увольнять после устройства, секунд' },
 
     ElectionMinPlayers = { 'rp_election_min_players', '3', 'Игроков на сервере, начиная с которых должность разыгрывается выборами' },
     ElectionSignupSeconds = { 'rp_election_signup_seconds', '300', 'Время приёма кандидатов, секунд' },
