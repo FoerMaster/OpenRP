@@ -61,7 +61,10 @@ function roleplay.Shop.Buy(ply, class)
     local item = roleplay.Shop.CanBuy(ply, class)
     if (!item) then return end
 
-    local price = item.Price or 0
+    local allow, price = hook.Run('OnPlayerBuyEntity', ply, class, item.Price or 0)
+    if (!allow) then return end
+
+    price = math.floor(price)
 
     if (!ply:CanAfford(price)) then
         ply:ChatError('NotEnoughMoney')
@@ -75,6 +78,8 @@ function roleplay.Shop.Buy(ply, class)
     ply:AddMoney(-price)
 
     ply:SendChat(roleplay.Colors.Money, roleplay.L('ShopBought', item.PrintName or class, price))
+
+    hook.Run('PlayerBoughtEntity', ply, class, ent, price)
 end
 
 function roleplay.Shop.BuyShip(ply, class)
@@ -87,7 +92,12 @@ function roleplay.Shop.BuyShip(ply, class)
     end
 
     local count = item.ShipCount
-    local price = math.floor(count * (item.Price or 0) * roleplay.Config.ShipDiscount:GetFloat())
+
+    local allow, price = hook.Run('OnPlayerBuyEntityShip', ply, class,
+        math.floor(count * (item.Price or 0) * roleplay.Config.ShipDiscount:GetFloat()), count)
+    if (!allow) then return end
+
+    price = math.floor(price)
 
     if (!ply:CanAfford(price)) then
         ply:ChatError('NotEnoughMoney')
@@ -103,6 +113,8 @@ function roleplay.Shop.BuyShip(ply, class)
     ply:AddMoney(-price)
 
     ply:SendChat(roleplay.Colors.Money, roleplay.L('ShopBoughtShip', item.PrintName or class, count, price))
+
+    hook.Run('PlayerBoughtEntityShip', ply, class, crate, price, count)
 end
 
 roleplay.Chat.AddCommand('buyent', function(sender, arguments)

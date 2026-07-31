@@ -43,13 +43,18 @@ if SERVER then
         local owner = self:GetRPOwner()
         if (IsValid(owner) and !owner:CheckLimit(self:GetStored())) then return end
 
-        if (!self:Drop(1)) then return end
+        if (!hook.Run('OnPlayerTakeFromCrate', activator, self)) then return end
+
+        local ent = self:Drop(1)
+        if (!ent) then return end
 
         self:SetCount(self:GetCount() - 1)
 
         if (self:GetCount() < 1) then
             self:Remove()
         end
+
+        hook.Run('PlayerTookFromCrate', activator, self, ent)
     end
 
     function ENT:OnTakeDamage(dmginfo)

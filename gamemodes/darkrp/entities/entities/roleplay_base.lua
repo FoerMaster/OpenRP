@@ -45,6 +45,8 @@ if SERVER then
         if (self:OnUsed(activator) == false) then return end
 
         self:TakeFromStack(1)
+
+        hook.Run('PlayerUsedEntity', activator, self)
     end
 
     function ENT:TakeFromStack(amount)

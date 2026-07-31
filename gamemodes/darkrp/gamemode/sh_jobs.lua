@@ -141,6 +141,72 @@ end
 function DEF_PLY:OnJoined( oldJob )
 end
 
+function DEF_PLY:CanBuyEntity( class, price )
+end
+
+function DEF_PLY:OnBoughtEntity( class, ent, price )
+end
+
+function DEF_PLY:CanBuyEntityShip( class, price, count )
+end
+
+function DEF_PLY:OnBoughtEntityShip( class, crate, price, count )
+end
+
+function DEF_PLY:CanVote( id, choice )
+end
+
+function DEF_PLY:OnVoted( id, choice )
+end
+
+function DEF_PLY:CanBecomeCandidate( ply )
+end
+
+function DEF_PLY:OnBecameCandidate( job )
+end
+
+function DEF_PLY:CanElectionVote( candidate )
+end
+
+function DEF_PLY:OnElectionVoted( candidate )
+end
+
+function DEF_PLY:CanSendChat( channel, text )
+end
+
+function DEF_PLY:OnSentChat( channel, text )
+end
+
+function DEF_PLY:CanSendPrivateChat( target, text )
+end
+
+function DEF_PLY:OnSentPrivateChat( target, text )
+end
+
+function DEF_PLY:CanRunChatCommand( command, arguments, noCmd )
+end
+
+function DEF_PLY:OnRanChatCommand( command, arguments, noCmd )
+end
+
+function DEF_PLY:CanUseEntity( ent )
+end
+
+function DEF_PLY:OnUsedEntity( ent )
+end
+
+function DEF_PLY:CanTakeFromCrate( crate )
+end
+
+function DEF_PLY:OnTookFromCrate( crate, ent )
+end
+
+function DEF_PLY:CanSpawnProp( model )
+end
+
+function DEF_PLY:OnGotSalary( salary )
+end
+
 player_manager.RegisterClass( "rp_player", DEF_PLY, nil )
 
 -- Флаги:

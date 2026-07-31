@@ -42,6 +42,10 @@ end
 
 function GM:PlayerSpawnProp(ply, model)
     if not IsValid(ply) then return true end
+
+    local canSpawn = player_manager.RunClass(ply, "CanSpawnProp", model)
+    if canSpawn != nil then return canSpawn end
+
     return ply:CheckLimit("props")
 end
 
@@ -219,10 +223,58 @@ function GM:PlayerSpawnedProp(ply, model, ent)
     player_manager.RunClass(ply, "OnSpawnedProp", model, ent)
 end
 
+function GM:OnPlayerBuyEntity(ply, class, price)
+    local canBuy, custom = player_manager.RunClass(ply, "CanBuyEntity", class, price)
+    if canBuy != nil then return canBuy, custom end
+
+    return true, price
+end
+
+function GM:PlayerBoughtEntity(ply, class, ent, price)
+    player_manager.RunClass(ply, "OnBoughtEntity", class, ent, price)
+end
+
+function GM:OnPlayerBuyEntityShip(ply, class, price, count)
+    local canBuy, custom = player_manager.RunClass(ply, "CanBuyEntityShip", class, price, count)
+    if canBuy != nil then return canBuy, custom end
+
+    return true, price
+end
+
+function GM:PlayerBoughtEntityShip(ply, class, crate, price, count)
+    player_manager.RunClass(ply, "OnBoughtEntityShip", class, crate, price, count)
+end
+
+function GM:PlayerUse(ply, ent)
+    local canUse = player_manager.RunClass(ply, "CanUseEntity", ent)
+    if canUse != nil then return canUse end
+
+    return true
+end
+
+function GM:PlayerUsedEntity(ply, ent)
+    player_manager.RunClass(ply, "OnUsedEntity", ent)
+end
+
+function GM:OnPlayerTakeFromCrate(ply, crate)
+    local canTake = player_manager.RunClass(ply, "CanTakeFromCrate", crate)
+    if canTake != nil then return canTake end
+
+    return true
+end
+
+function GM:PlayerTookFromCrate(ply, crate, ent)
+    player_manager.RunClass(ply, "OnTookFromCrate", crate, ent)
+end
+
 function GM:OnPlayerGotSalary(ply, salary)
     local canGot, custom = player_manager.RunClass(ply, "OnSalary", salary)
     if canGot != nil then return canGot, custom end
     return true, salary
+end
+
+function GM:PlayerGotSalary(ply, salary)
+    player_manager.RunClass(ply, "OnGotSalary", salary)
 end
 
 function GM:OnPlayerBecomeJob(ply, job, oldJob)
@@ -242,10 +294,69 @@ function GM:PlayerBecameJob(ply, job, oldJob)
     player_manager.RunClass(ply, "OnJoined", oldJob)
 end
 
+function GM:OnVoteStart(id, text, delay)
+    return true
+end
+
+function GM:OnPlayerVote(ply, id, choice)
+    local canVote = player_manager.RunClass(ply, "CanVote", id, choice)
+    if canVote != nil then return canVote end
+
+    return true
+end
+
+function GM:PlayerVoted(ply, id, choice)
+    player_manager.RunClass(ply, "OnVoted", id, choice)
+end
+
+function GM:OnPlayerBecomeCandidate(ply, job)
+    local allow = job:CanBecomeCandidate(ply)
+    if allow != nil then return allow end
+
+    return true
+end
+
+function GM:PlayerBecameCandidate(ply, job)
+    player_manager.RunClass(ply, "OnBecameCandidate", job)
+end
+
+function GM:OnPlayerElectionVote(ply, candidate)
+    local canVote = player_manager.RunClass(ply, "CanElectionVote", candidate)
+    if canVote != nil then return canVote end
+
+    return true
+end
+
+function GM:PlayerElectionVoted(ply, candidate)
+    player_manager.RunClass(ply, "OnElectionVoted", candidate)
+end
+
 function GM:PlayerSay(sender, text, teamChat)
     roleplay.Chat.Route(sender, text)
 
     return ""
+end
+
+function GM:OnPlayerSendChat(ply, channel, text)
+    local canSend, custom = player_manager.RunClass(ply, "CanSendChat", channel, text)
+    if canSend != nil then return canSend, custom end
+
+    return true, text
+end
+
+function GM:PlayerSentChat(ply, channel, text)
+    player_manager.RunClass(ply, "OnSentChat", channel, text)
+end
+
+function GM:OnPlayerSendPrivateChat(ply, target, text)
+    local canSend, custom = player_manager.RunClass(ply, "CanSendPrivateChat", target, text)
+    if canSend != nil then return canSend, custom end
+
+    return true, text
+end
+
+function GM:PlayerSentPrivateChat(ply, target, text)
+    player_manager.RunClass(ply, "OnSentPrivateChat", target, text)
 end
 
 function GM:PlayerCanHearPlayersVoice(listener, talker)
@@ -263,8 +374,15 @@ function GM:GetFallDamage(ply, speed)
     return math.min((speed - safe) / range * 100, 100)
 end
 
-function GM:OnPlayerChatCommand(sender,command,arguments, noCmd)
+function GM:OnPlayerChatCommand(sender, command, arguments, noCmd)
+    local canRun = player_manager.RunClass(sender, "CanRunChatCommand", command, arguments, noCmd)
+    if canRun != nil then return canRun end
+
     return true
+end
+
+function GM:PlayerChatCommand(sender, command, arguments, noCmd)
+    player_manager.RunClass(sender, "OnRanChatCommand", command, arguments, noCmd)
 end
 
 function PLAYER:Notify(text, type, time)

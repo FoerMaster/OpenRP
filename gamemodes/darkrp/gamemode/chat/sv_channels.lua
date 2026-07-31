@@ -76,11 +76,16 @@ function roleplay.Chat.Send(sender, id, text)
         return
     end
 
+    local allow, custom = hook.Run('OnPlayerSendChat', sender, id, text)
+    if (!allow) then return false end
+
+    text = custom or text
+
     local targets = receivers(sender, channel)
 
     if (#targets < 2 and channel.Flag) then
         sender:ChatError('ChatNoReceivers')
-        return
+        return false
     end
 
     for _, ply in ipairs(targets) do
@@ -92,6 +97,10 @@ function roleplay.Chat.Send(sender, id, text)
             ply:SendChat(NAME_COLOR, sender:Nick() .. ': ', color_white, text)
         end
     end
+
+    hook.Run('PlayerSentChat', sender, id, text)
+
+    return true
 end
 
 function roleplay.Chat.SendPrivate(sender, target, text)
@@ -101,10 +110,19 @@ function roleplay.Chat.SendPrivate(sender, target, text)
         return
     end
 
+    local allow, custom = hook.Run('OnPlayerSendPrivateChat', sender, target, text)
+    if (!allow) then return false end
+
+    text = custom or text
+
     local header = string.format('[PM] %s -> %s: ', sender:Nick(), target:Nick())
 
     sender:SendChat(PRIVATE_COLOR, header, color_white, text)
     target:SendChat(PRIVATE_COLOR, header, color_white, text)
+
+    hook.Run('PlayerSentPrivateChat', sender, target, text)
+
+    return true
 end
 
 function roleplay.Chat.Route(sender, text)
@@ -159,7 +177,7 @@ roleplay.Chat.AddCommand('advert', function(sender, arguments, noCommand)
         return
     end
 
-    roleplay.Chat.Send(sender, 'advert', text)
+    if (!roleplay.Chat.Send(sender, 'advert', text)) then return end
 
     sender:AddMoney(-cost)
     advertReadyAt[steamID] = CurTime() + roleplay.Config.AdvertDelay:GetInt()
