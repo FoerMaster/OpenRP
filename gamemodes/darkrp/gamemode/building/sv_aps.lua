@@ -1,5 +1,4 @@
 local GHOST_COLOR      = Color(255, 255, 255, 100)
-local UNGHOST_COLOR    = Color(255, 255, 255, 255)
 local GHOST_PADDING    = Vector(7, 7, 7)
 
 local function worldAABB(self, padding)
@@ -42,7 +41,7 @@ end
 function ENTITY:UnGhost()
     self.ghostedAt = nil
     self:SetRenderMode(RENDERMODE_NORMAL)
-    self:SetColor(UNGHOST_COLOR)
+    self:SetColor(color_white)
     self:SetCollisionGroup(COLLISION_GROUP_NONE)
 end
 

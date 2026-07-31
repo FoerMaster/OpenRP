@@ -80,7 +80,7 @@ function GM:CanTool(ply, trace, _)
     end
 
     if not ent:IsOwnedBy(ply) then
-        ply:Notify(self.Lang['NotYourEntity'], 1)
+        ply:NotifyError('NotYourEntity')
         return false
     end
 

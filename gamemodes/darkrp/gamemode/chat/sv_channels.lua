@@ -1,5 +1,4 @@
 local NAME_COLOR = Color(200, 200, 200)
-local TEXT_COLOR = Color(255, 255, 255)
 local PRIVATE_COLOR = Color(255, 130, 220)
 
 local advertReadyAt = {}
@@ -88,9 +87,9 @@ function roleplay.Chat.Send(sender, id, text)
         if (channel.Action) then
             ply:SendChat(channel.Color, channel.Tag, sender:Nick() .. ' ' .. text)
         elseif (channel.Tag) then
-            ply:SendChat(channel.Color, channel.Tag, NAME_COLOR, sender:Nick() .. ': ', TEXT_COLOR, text)
+            ply:SendChat(channel.Color, channel.Tag, NAME_COLOR, sender:Nick() .. ': ', color_white, text)
         else
-            ply:SendChat(NAME_COLOR, sender:Nick() .. ': ', TEXT_COLOR, text)
+            ply:SendChat(NAME_COLOR, sender:Nick() .. ': ', color_white, text)
         end
     end
 end
@@ -104,8 +103,8 @@ function roleplay.Chat.SendPrivate(sender, target, text)
 
     local header = string.format('[PM] %s → %s: ', sender:Nick(), target:Nick())
 
-    sender:SendChat(PRIVATE_COLOR, header, TEXT_COLOR, text)
-    target:SendChat(PRIVATE_COLOR, header, TEXT_COLOR, text)
+    sender:SendChat(PRIVATE_COLOR, header, color_white, text)
+    target:SendChat(PRIVATE_COLOR, header, color_white, text)
 end
 
 function roleplay.Chat.Route(sender, text)

@@ -9,16 +9,10 @@ function PLAYER:DropDeathMoney()
     if (!allow) then return end
 
     amount = math.floor(custom or amount)
-    if (amount <= 0 or !self:CanAfford(amount)) then return end
 
-    local money = ents.Create("money")
-    if (!IsValid(money)) then return end
+    local money = self:DropMoney(amount)
+    if (!money) then return end
 
-    money:SetPos(self:GetPos())
-    money:SetAmount(amount)
-    money:Spawn()
-
-    self:AddMoney(-amount)
     self:NotifyError('DeathMoneyLost', amount)
 
     hook.Run("PlayerDroppedDeathMoney", self, amount, money)

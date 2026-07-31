@@ -81,9 +81,7 @@ function ENTITY:ClearDoorSubOwners()
         subOwner._SubOwnedDoors[self] = nil
     end
 
-    local data = table.Copy(self:DoorRawData())
-    data.sub_owners = {}
-    self:SetNetVar('door_data', data)
+    self:DoorUpdate({ sub_owners = {} })
 end
 
 function ENTITY:CanBeChangeNameBy(ply)

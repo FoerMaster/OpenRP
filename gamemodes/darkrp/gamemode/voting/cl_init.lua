@@ -94,7 +94,7 @@ local function build()
         local voting = roleplay.Vote.Active()
         if (!voting) then return end
 
-        self:SetText(string.format(GAMEMODE.Lang['VoteSeconds'], math.ceil(math.max(voting.endsAt - CurTime(), 0))))
+        self:SetText(roleplay.L('VoteSeconds', math.ceil(math.max(voting.endsAt - CurTime(), 0))))
         self:SizeToContents()
     end
 
@@ -106,7 +106,7 @@ local function build()
     panel.no = vgui.Create('DButton', buttons)
     panel.no:Dock(RIGHT)
     panel.no:DockMargin(6, 0, 0, 0)
-    panel.no:SetText(GAMEMODE.Lang['VoteNo'])
+    panel.no:SetText(roleplay.L('VoteNo'))
     panel.no:SetFont(roleplay.Kit.Fonts.Button)
     panel.no:SetTextColor(color_white)
     panel.no:SetSkin('OpenRP')
@@ -116,7 +116,7 @@ local function build()
 
     panel.yes = vgui.Create('DButton', buttons)
     panel.yes:Dock(FILL)
-    panel.yes:SetText(GAMEMODE.Lang['VoteYes'])
+    panel.yes:SetText(roleplay.L('VoteYes'))
     panel.yes:SetFont(roleplay.Kit.Fonts.Button)
     panel.yes:SetTextColor(color_white)
     panel.yes:SetSkin('OpenRP')

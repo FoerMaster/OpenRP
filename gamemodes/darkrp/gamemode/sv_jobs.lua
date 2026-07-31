@@ -38,7 +38,7 @@ end
 local function startJobVote(sender, job)
     local id = 'job_vote_' .. sender:UserID()
 
-    local started = roleplay.Vote.Start(id, string.format(GAMEMODE.Lang["JobVoteRequest"], sender:Nick(), job.DisplayName), roleplay.Config.JobVoteSeconds:GetInt(), function(yes, no)
+    local started = roleplay.Vote.Start(id, roleplay.L('JobVoteRequest', sender:Nick(), job.DisplayName), roleplay.Config.JobVoteSeconds:GetInt(), function(yes, no)
         if (!IsValid(sender)) then return end
 
         if (!jobHasFreeSlot(job)) then
@@ -72,7 +72,7 @@ local function startDemoteVote(sender, target, reason)
     local job = target:Job()
     local id = 'demote_vote_' .. target:UserID()
 
-    return roleplay.Vote.Start(id, string.format(GAMEMODE.Lang["DemoteVoteRequest"], sender:Nick(), target:Nick(), job.DisplayName, reason), roleplay.Config.DemoteVoteSeconds:GetInt(), function()
+    return roleplay.Vote.Start(id, roleplay.L('DemoteVoteRequest', sender:Nick(), target:Nick(), job.DisplayName, reason), roleplay.Config.DemoteVoteSeconds:GetInt(), function()
         if (!IsValid(target)) then return end
         if (target:Job().ID != job.ID) then return end
 

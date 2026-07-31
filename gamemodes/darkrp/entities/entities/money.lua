@@ -14,7 +14,9 @@ function ENT:Initialize()
 end
 
 function ENT:SetupDataTables()
-    self:NetworkVar("Int", 0, "Amount")
+    self.BaseClass.SetupDataTables(self)
+
+    self:NetworkVar("Int", 1, "Amount")
 end
 
 if SERVER then

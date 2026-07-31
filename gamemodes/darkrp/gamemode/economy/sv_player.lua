@@ -36,7 +36,7 @@ function PLAYER:DropMoney(amount)
 
     hook.Run("PlayerDroppedMoney", self, amount, money)
 
-    return true
+    return money
 end
 
 function PLAYER:TransferMoney(ply, amount)

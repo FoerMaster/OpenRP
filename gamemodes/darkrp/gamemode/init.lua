@@ -64,6 +64,9 @@ include('doors/sv_player.lua')
 -- Смерть
 include('death/sv_death.lua')
 
+-- Магазин
+include('shop/sv_shop.lua')
+
 -- Строительство
 include('building/sh_aps.lua')
 include('building/sv_player.lua')
@@ -76,6 +79,8 @@ function GM:InitPostEntity()
     for command, value in pairs(roleplay.Config.Engine) do
         RunConsoleCommand(command, value)
     end
+
+    roleplay.Shop.Setup()
 end
 
 hook.Call("RolePlay.Loaded", GM)

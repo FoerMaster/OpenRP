@@ -27,6 +27,9 @@ local SETTINGS = {
     DeathMoneyPercent = { 'rp_death_money_percent', '0.3', 'Доля кошелька, выпадающая при смерти' },
     DeathMoneyMax = { 'rp_death_money_max', '10000', 'Потолок потери денег за одну смерть' },
 
+    ShipDiscount = { 'rp_ship_discount', '0.8', 'Доля цены при покупке ящиком' },
+    CrateHealth = { 'rp_crate_health', '100', 'Прочность ящика' },
+
     SafeFallSpeed = { 'rp_safe_fall_speed', '580', 'Скорость падения без урона' },
     FatalFallSpeed = { 'rp_fatal_fall_speed', '1024', 'Скорость падения со смертельным уроном' }
 }
