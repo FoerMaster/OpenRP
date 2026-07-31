@@ -27,6 +27,12 @@ function PLAYER:SendChat(...)
     net.Send(self)
 end
 
+function roleplay.Chat.Broadcast(...)
+    for _, ply in player.Iterator() do
+        ply:SendChat(...)
+    end
+end
+
 function PLAYER:ChatError(key, ...)
     self:SendChat(roleplay.Colors.Error, roleplay.L(key, ...))
 end

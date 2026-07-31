@@ -8,6 +8,8 @@ function GM:PlayerInitialSpawn(ply, transition)
     ply:SetMoney(roleplay.Config.StartMoney:GetInt())
     player_manager.SetPlayerClass(ply, roleplay.DefaultJob())
 
+    roleplay.Election.Sync(ply)
+
     timer.Create("rp_salary_" .. ply:UserID(), roleplay.Config.SalaryDelay:GetInt(), 0, function()
         if IsValid(ply) then
             ply:GiveSalary()
@@ -23,6 +25,7 @@ function GM:PlayerDisconnected(ply)
 
     roleplay.CancelJobVotes(ply)
     roleplay.Vote.Cleanup(ply)
+    roleplay.Election.Cleanup(ply)
 end
 
 function GM:PlayerLoadout(ply)
@@ -224,7 +227,7 @@ function GM:OnPlayerBecomeJob(ply, job, oldJob)
     local allow = job:CanJoin(ply)
     if allow != nil then return allow end
 
-    if (job.MaxPlayers >= 0 and roleplay.CountJobPlayers(job) >= job.MaxPlayers) then return false end
+    if (!roleplay.JobHasFreeSlot(job)) then return false end
 
     return true
 end

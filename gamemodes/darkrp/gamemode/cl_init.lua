@@ -21,6 +21,10 @@ include('vgui/cl_skin.lua')
 -- Голосования
 include('voting/cl_init.lua')
 
+-- Правительство
+include('modules/government/sh_election.lua')
+include('modules/government/cl_election.lua')
+
 -- Экономика
 include('economy/sh_player.lua')
 

@@ -25,7 +25,7 @@ function roleplay.CountJobPlayers(job)
     return count
 end
 
-local function jobHasFreeSlot(job)
+function roleplay.JobHasFreeSlot(job)
     if (job.MaxPlayers < 0) then return true end
 
     return roleplay.CountJobPlayers(job) < job.MaxPlayers
@@ -41,7 +41,7 @@ local function startJobVote(sender, job)
     local started = roleplay.Vote.Start(id, roleplay.L('JobVoteRequest', sender:Nick(), job.DisplayName), roleplay.Config.JobVoteSeconds:GetInt(), function(yes, no)
         if (!IsValid(sender)) then return end
 
-        if (!jobHasFreeSlot(job)) then
+        if (!roleplay.JobHasFreeSlot(job)) then
             sender:ChatError("JobNoFreeSlots")
             return
         end
@@ -102,8 +102,13 @@ roleplay.Chat.AddCommand('become', function(sender, arguments)
         return
     end
 
+    if (table.HasValue(job.Flags, JOB_FLAG_ELECTION)) then
+        roleplay.Election.Request(sender, job)
+        return
+    end
+
     if (table.HasValue(job.Flags, JOB_FLAG_NEED_VOTE)) then
-        if (!jobHasFreeSlot(job)) then
+        if (!roleplay.JobHasFreeSlot(job)) then
             sender:ChatError("JobNoFreeSlots")
             return
         end

@@ -17,6 +17,11 @@ local SETTINGS = {
     DemoteVoteSeconds = { 'rp_demote_vote_seconds', '30', 'Время голосования за увольнение' },
     MinPlayersToDemote = { 'rp_min_players_to_demote', '4', 'Минимум игроков для команды /demote' },
 
+    ElectionMinPlayers = { 'rp_election_min_players', '3', 'Игроков на сервере, начиная с которых должность разыгрывается выборами' },
+    ElectionSignupSeconds = { 'rp_election_signup_seconds', '300', 'Время приёма кандидатов, секунд' },
+    ElectionVoteSeconds = { 'rp_election_vote_seconds', '300', 'Время голосования за кандидатов, секунд' },
+    ElectionMaxCandidates = { 'rp_election_max_candidates', '5', 'Максимум кандидатов на выборах' },
+
     CommandDelay = { 'rp_command_delay', '2', 'Пауза между чат-командами, секунд' },
     AdvertCost = { 'rp_advert_cost', '1500', 'Цена одного сообщения в /advert' },
     AdvertDelay = { 'rp_advert_delay', '60', 'Пауза между сообщениями в /advert, секунд' },

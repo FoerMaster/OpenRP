@@ -1,0 +1,11 @@
+JOB.DisplayName = "Мэр"
+JOB.Description = "Управляет городом, издаёт законы и распоряжается бюджетом"
+JOB.Color = Color(154, 111, 23)
+JOB.Team = TEAM_GOVERNMENT
+JOB.MaxPlayers = 1
+JOB.MaxHealth = 100
+JOB.StartHealth = 100
+JOB.StartArmor = 0
+JOB.Salary = 2500
+JOB.Flags = { JOB_FLAG_ELECTION, JOB_FLAG_DEMOTE_ON_DEATH }
+JOB.Model = { "models/player/breen.mdl" }

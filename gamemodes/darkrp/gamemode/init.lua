@@ -18,6 +18,8 @@ AddCSLuaFile('sh_player.lua')
 AddCSLuaFile('economy/sh_player.lua')
 AddCSLuaFile('doors/sh_door.lua')
 AddCSLuaFile('building/sh_aps.lua')
+AddCSLuaFile('modules/government/sh_election.lua')
+AddCSLuaFile('modules/government/cl_election.lua')
 AddCSLuaFile('chat/cl_chat.lua')
 AddCSLuaFile('vgui/cl_skin.lua')
 AddCSLuaFile('voting/cl_init.lua')
@@ -51,6 +53,10 @@ include('voting/sv_init.lua')
 
 -- Смена профессий
 include('sv_jobs.lua')
+
+-- Правительство
+include('modules/government/sh_election.lua')
+include('modules/government/sv_election.lua')
 
 -- Экономика
 include('economy/sh_player.lua')
