@@ -1,5 +1,5 @@
 JOB.DisplayName = "Мэр"
-JOB.Description = "Управляет городом, издаёт законы и распоряжается бюджетом"
+JOB.Description = "Управляет городом, издает законы и распоряжается бюджетом"
 JOB.Color = Color(154, 111, 23)
 JOB.Team = TEAM_GOVERNMENT
 JOB.MaxPlayers = 1

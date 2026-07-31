@@ -5,6 +5,7 @@ function GM:PlayerInitialSpawn(ply, transition)
     ply._OwnedDoors = {}
     ply._SubOwnedDoors = {}
 
+    -- TODO: сохранения нет, кошелек и двери сбрасываются каждый заход
     ply:SetMoney(roleplay.Config.StartMoney:GetInt())
     player_manager.SetPlayerClass(ply, roleplay.DefaultJob())
 

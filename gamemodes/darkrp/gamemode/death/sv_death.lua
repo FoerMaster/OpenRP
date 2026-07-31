@@ -26,7 +26,7 @@ function PLAYER:DemoteOnDeath()
 
     if (oldJob.ID == job.ID) then return end
 
-    -- Класс ставим напрямую: PLAYER:SetJob зовёт Spawn и возродил бы игрока сразу
+    -- Класс ставим напрямую: PLAYER:SetJob зовет Spawn и возродил бы игрока сразу
     player_manager.SetPlayerClass(self, job.ID)
 
     hook.Run("PlayerBecameJob", self, job, oldJob)

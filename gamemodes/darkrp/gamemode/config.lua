@@ -19,7 +19,7 @@ local SETTINGS = {
     DemoteImmunity = { 'rp_demote_immunity', '300', 'Сколько игрока нельзя увольнять после устройства, секунд' },
 
     ElectionMinPlayers = { 'rp_election_min_players', '3', 'Игроков на сервере, начиная с которых должность разыгрывается выборами' },
-    ElectionSignupSeconds = { 'rp_election_signup_seconds', '300', 'Время приёма кандидатов, секунд' },
+    ElectionSignupSeconds = { 'rp_election_signup_seconds', '300', 'Время приема кандидатов, секунд' },
     ElectionVoteSeconds = { 'rp_election_vote_seconds', '300', 'Время голосования за кандидатов, секунд' },
     ElectionMaxCandidates = { 'rp_election_max_candidates', '5', 'Максимум кандидатов на выборах' },
 

@@ -13,7 +13,7 @@ function roleplay.Shop.Setup()
         if (!roleplay.Shop.Get(class)) then continue end
 
         roleplay.Config.Limits[class] = CreateConVar('rp_limit_' .. class, '1',
-            FCVAR_ARCHIVE + FCVAR_NOTIFY, 'Сколько предметов «' .. class .. '» может держать игрок')
+            FCVAR_ARCHIVE + FCVAR_NOTIFY, 'Сколько предметов ' .. class .. ' может держать игрок')
     end
 end
 

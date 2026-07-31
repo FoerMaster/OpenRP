@@ -6,7 +6,8 @@ concommand.Add( "gm_spawn", function(ply, command, arguments)
 
     if ( model == nil ) then return end
 
-	if (!roleplay.Config.AllowedProps[model]) then
+    -- TODO: вайтлист пока пустой, спавн держится на util.IsValidProp
+    if (!roleplay.Config.AllowedProps[model]) then
         ply:NotifyError('PropNotAllowed')
         return
     end

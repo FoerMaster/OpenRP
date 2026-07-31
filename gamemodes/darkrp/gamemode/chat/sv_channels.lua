@@ -101,7 +101,7 @@ function roleplay.Chat.SendPrivate(sender, target, text)
         return
     end
 
-    local header = string.format('[PM] %s → %s: ', sender:Nick(), target:Nick())
+    local header = string.format('[PM] %s -> %s: ', sender:Nick(), target:Nick())
 
     sender:SendChat(PRIVATE_COLOR, header, color_white, text)
     target:SendChat(PRIVATE_COLOR, header, color_white, text)

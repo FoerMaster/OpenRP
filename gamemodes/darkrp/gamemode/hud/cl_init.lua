@@ -48,6 +48,7 @@ function roleplay.HUD.UpdateCursor()
     end
 end
 
+-- TODO: заглушка на дебажном шрифте, переделать на нормальный худ
 function roleplay.HUD.Draw()
     local ply = LocalPlayer()
     local job = ply:Job()

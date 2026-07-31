@@ -66,8 +66,8 @@ function GM:Think()
     roleplay.Vote.Prune()
 end
 
--- Цепочка повторяет базовый геймод: своей реализацией мы её замещаем,
--- а от неё зависят транспорт, JOB:CalcView и WEAPON:CalcView
+-- Цепочка повторяет базовый геймод: своей реализацией мы ее замещаем,
+-- а от нее зависят транспорт, JOB:CalcView и WEAPON:CalcView
 function GM:CalcView(ply, origin, angles, fov, znear, zfar)
     local death = roleplay.Death.CalcView(ply)
     if (death) then return death end
