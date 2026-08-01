@@ -25,6 +25,7 @@ include('voting/cl_init.lua')
 include('modules/government/sh_election.lua')
 include('modules/government/cl_election.lua')
 include('modules/government/cl_laws.lua')
+include('modules/government/sh_license.lua')
 
 -- Экономика
 include('economy/sh_player.lua')

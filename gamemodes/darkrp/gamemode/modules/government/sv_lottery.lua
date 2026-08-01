@@ -48,6 +48,7 @@ end
 function roleplay.Lottery.Voted(ply, id, choice)
     if id != ID then return end
     if !choice then return end
+    if !ply:CanAfford(lottery.price) then return end
 
     ply:AddMoney(-lottery.price)
     lottery.participants[ply] = true

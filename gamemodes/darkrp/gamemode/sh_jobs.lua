@@ -189,6 +189,18 @@ end
 function DEF_PLY:OnChangedTax( percent )
 end
 
+function DEF_PLY:CanGiveWeaponLicense( target )
+end
+
+function DEF_PLY:OnGaveWeaponLicense( target )
+end
+
+function DEF_PLY:CanStripWeaponLicense( target )
+end
+
+function DEF_PLY:OnStrippedWeaponLicense( target )
+end
+
 function DEF_PLY:CanSendChat( channel, text )
 end
 
@@ -238,3 +250,5 @@ JOB_FLAG_ELECTION = 7
 JOB_FLAG_EDIT_LAWS = 8
 JOB_FLAG_START_LOTTERY = 9
 JOB_FLAG_COLLECT_TAX = 10
+JOB_FLAG_WEAPON_LICENSE = 11
+JOB_FLAG_MANAGE_LICENSE = 12

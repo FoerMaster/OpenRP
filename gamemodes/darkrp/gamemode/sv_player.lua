@@ -8,6 +8,7 @@ function GM:PlayerInitialSpawn(ply, transition)
     -- TODO: сохранения нет, кошелек и двери сбрасываются каждый заход
     ply:SetMoney(roleplay.Config.StartMoney:GetInt())
     player_manager.SetPlayerClass(ply, roleplay.DefaultJob())
+    ply:ResetWeaponLicense()
 
     roleplay.Election.Sync(ply)
     roleplay.Laws.Sync(ply)
@@ -290,6 +291,7 @@ end
 
 function GM:PlayerBecameJob(ply, job, oldJob)
     ply._JobJoinedAt = CurTime()
+    ply:ResetWeaponLicense()
 
     roleplay.Vote.Cancel(roleplay.DemoteVoteID(ply))
 
@@ -372,6 +374,30 @@ end
 
 function GM:PlayerChangedTax(ply, percent)
     player_manager.RunClass(ply, "OnChangedTax", percent)
+end
+
+function GM:OnPlayerGiveWeaponLicense(ply, target)
+    local allow = player_manager.RunClass(ply, "CanGiveWeaponLicense", target)
+    if allow != nil then return allow end
+    if !ply:HasJobFlag(JOB_FLAG_MANAGE_LICENSE) then return false end
+
+    return true
+end
+
+function GM:PlayerGaveWeaponLicense(ply, target)
+    player_manager.RunClass(ply, "OnGaveWeaponLicense", target)
+end
+
+function GM:OnPlayerStripWeaponLicense(ply, target)
+    local allow = player_manager.RunClass(ply, "CanStripWeaponLicense", target)
+    if allow != nil then return allow end
+    if !ply:HasJobFlag(JOB_FLAG_MANAGE_LICENSE) then return false end
+
+    return true
+end
+
+function GM:PlayerStrippedWeaponLicense(ply, target)
+    player_manager.RunClass(ply, "OnStrippedWeaponLicense", target)
 end
 
 function GM:PlayerSay(sender, text, teamChat)

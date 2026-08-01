@@ -12,6 +12,11 @@ nw.Register 'respawn_at'
     :Read(net.ReadFloat)
     :SetLocalPlayer()
 
+nw.Register 'weapon_license'
+    :Write(net.WriteBool)
+    :Read(net.ReadBool)
+    :SetPlayer()
+
 nw.Register 'door_data'
     :Write(net.WriteTable)
     :Read(net.ReadTable)
