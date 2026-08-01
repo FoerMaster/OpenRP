@@ -362,6 +362,18 @@ function GM:PlayerStartedLottery(ply, price)
     player_manager.RunClass(ply, "OnStartedLottery", price)
 end
 
+function GM:OnPlayerChangeTax(ply, percent)
+    local canChange = player_manager.RunClass(ply, "CanChangeTax", percent)
+    if canChange != nil then return canChange end
+    if !ply:HasJobFlag(JOB_FLAG_COLLECT_TAX) then return false end
+
+    return true
+end
+
+function GM:PlayerChangedTax(ply, percent)
+    player_manager.RunClass(ply, "OnChangedTax", percent)
+end
+
 function GM:PlayerSay(sender, text, teamChat)
     roleplay.Chat.Route(sender, text)
 

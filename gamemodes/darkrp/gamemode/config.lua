@@ -31,6 +31,9 @@ local SETTINGS = {
     LotteryMinPrice = { 'rp_lottery_min_price', '1000', 'Минимальная ставка в лотерее' },
     LotteryMaxPrice = { 'rp_lottery_max_price', '1000000', 'Максимальная ставка в лотерее' },
 
+    TaxMin = { 'rp_tax_min', '0', 'Минимальный налог, процентов' },
+    TaxMax = { 'rp_tax_max', '30', 'Максимальный налог, процентов' },
+
     CommandDelay = { 'rp_command_delay', '2', 'Пауза между чат-командами, секунд' },
     AdvertCost = { 'rp_advert_cost', '1500', 'Цена одного сообщения в /advert' },
     AdvertDelay = { 'rp_advert_delay', '60', 'Пауза между сообщениями в /advert, секунд' },

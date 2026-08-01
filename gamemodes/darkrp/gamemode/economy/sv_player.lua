@@ -62,9 +62,16 @@ function PLAYER:GiveSalary()
 
     salary = math.floor(salary)
 
+    local tax = roleplay.Tax.Collect(self, salary)
+    salary = salary - tax
+
     self:AddMoney(salary)
 
-    self:NotifyInfo('SalaryReceived', salary)
+    if tax > 0 then
+        self:NotifyInfo('SalaryTaxed', salary, tax)
+    else
+        self:NotifyInfo('SalaryReceived', salary)
+    end
 
     hook.Run("PlayerGotSalary", self, salary)
 

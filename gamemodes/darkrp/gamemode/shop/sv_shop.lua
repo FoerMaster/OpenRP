@@ -64,7 +64,7 @@ function roleplay.Shop.Buy(ply, class)
     local allow, price = hook.Run('OnPlayerBuyEntity', ply, class, item.Price or 0)
     if (!allow) then return end
 
-    price = math.floor(price)
+    price = roleplay.Tax.Price(price)
 
     if !ply:CanAfford(price) then
         ply:ChatError('NotEnoughMoney')
@@ -96,7 +96,7 @@ function roleplay.Shop.BuyShip(ply, class)
         math.floor(count * (item.Price or 0) * roleplay.Config.ShipDiscount:GetFloat()), count)
     if (!allow) then return end
 
-    price = math.floor(price)
+    price = roleplay.Tax.Price(price)
 
     if !ply:CanAfford(price) then
         ply:ChatError('NotEnoughMoney')

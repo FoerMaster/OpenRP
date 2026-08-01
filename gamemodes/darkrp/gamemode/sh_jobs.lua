@@ -183,6 +183,12 @@ end
 function DEF_PLY:OnStartedLottery( price )
 end
 
+function DEF_PLY:CanChangeTax( percent )
+end
+
+function DEF_PLY:OnChangedTax( percent )
+end
+
 function DEF_PLY:CanSendChat( channel, text )
 end
 
@@ -231,3 +237,4 @@ JOB_FLAG_RECEIVE_911 = 6
 JOB_FLAG_ELECTION = 7
 JOB_FLAG_EDIT_LAWS = 8
 JOB_FLAG_START_LOTTERY = 9
+JOB_FLAG_COLLECT_TAX = 10
