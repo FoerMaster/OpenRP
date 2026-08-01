@@ -100,7 +100,6 @@ local function build()
     return frame
 end
 
--- TODO: заглушка на дебажном шрифте, переделать вместе с основным худом
 function roleplay.Laws.Draw()
     if #lines == 0 then return end
 

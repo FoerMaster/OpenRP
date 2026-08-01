@@ -26,6 +26,11 @@ local SETTINGS = {
     LawsEditDelay = { 'rp_laws_edit_delay', '180', 'Пауза между изменениями законов города, секунд' },
     LawMaxLength = { 'rp_law_max_length', '64', 'Предел длины одного закона, символов' },
 
+    LotteryDelay = { 'rp_lottery_delay', '1200', 'Пауза между лотереями, секунд' },
+    LotteryVoteSeconds = { 'rp_lottery_vote_seconds', '60', 'Время приема ставок в лотерею' },
+    LotteryMinPrice = { 'rp_lottery_min_price', '1000', 'Минимальная ставка в лотерее' },
+    LotteryMaxPrice = { 'rp_lottery_max_price', '1000000', 'Максимальная ставка в лотерее' },
+
     CommandDelay = { 'rp_command_delay', '2', 'Пауза между чат-командами, секунд' },
     AdvertCost = { 'rp_advert_cost', '1500', 'Цена одного сообщения в /advert' },
     AdvertDelay = { 'rp_advert_delay', '60', 'Пауза между сообщениями в /advert, секунд' },
@@ -76,7 +81,6 @@ function roleplay.DefaultJob()
     return cvar and cvar:GetString() or 'citizen'
 end
 
--- Верхний предел держит счетчик законов в 4 битах, которыми он уходит по сети
 function roleplay.MaxLaws()
     local cvar = GetConVar('rp_laws_max')
 

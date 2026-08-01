@@ -27,6 +27,7 @@ function GM:PlayerDisconnected(ply)
 
     roleplay.Vote.Cancel(roleplay.JobVoteID(ply))
     roleplay.Vote.Cancel(roleplay.DemoteVoteID(ply))
+    roleplay.Lottery.Cleanup(ply)
     roleplay.Vote.Cleanup(ply)
     roleplay.Election.Cleanup(ply)
 end
@@ -303,10 +304,15 @@ function GM:OnPlayerVote(ply, id, choice)
     local canVote = player_manager.RunClass(ply, "CanVote", id, choice)
     if canVote != nil then return canVote end
 
+    local canBet = roleplay.Lottery.CanVote(ply, id, choice)
+    if canBet != nil then return canBet end
+
     return true
 end
 
 function GM:PlayerVoted(ply, id, choice)
+    roleplay.Lottery.Voted(ply, id, choice)
+
     player_manager.RunClass(ply, "OnVoted", id, choice)
 end
 
@@ -342,6 +348,18 @@ end
 
 function GM:PlayerEditedLaws(ply, laws)
     player_manager.RunClass(ply, "OnEditedLaws", laws)
+end
+
+function GM:OnPlayerStartLottery(ply, price)
+    local canStart = player_manager.RunClass(ply, "CanStartLottery", price)
+    if canStart != nil then return canStart end
+    if !ply:HasJobFlag(JOB_FLAG_START_LOTTERY) then return false end
+
+    return true
+end
+
+function GM:PlayerStartedLottery(ply, price)
+    player_manager.RunClass(ply, "OnStartedLottery", price)
 end
 
 function GM:PlayerSay(sender, text, teamChat)

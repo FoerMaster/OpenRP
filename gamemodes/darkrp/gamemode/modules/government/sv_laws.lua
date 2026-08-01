@@ -17,17 +17,13 @@ local nextEditAt = 0
 
 local function write()
     net.WriteUInt(#laws, 4)
-
     for _, law in ipairs(laws) do
         net.WriteString(law)
     end
 end
 
--- Лежит отдельно от загрузки файла: roleplay.L читает GAMEMODE, а он
--- появляется только после того, как геймод собран целиком
 function roleplay.Laws.Setup()
     laws = {}
-
     for _, key in ipairs(DEFAULT_KEYS) do
         laws[#laws + 1] = roleplay.L(key)
     end
@@ -42,7 +38,6 @@ end
 local function read(ply)
     local count = net.ReadUInt(4)
     local incoming = {}
-
     for i = 1, count do
         incoming[i] = string.Trim(net.ReadString())
     end
@@ -54,7 +49,6 @@ local function read(ply)
     end
 
     local limit = roleplay.Config.LawMaxLength:GetInt()
-
     for _, law in ipairs(incoming) do
         if law == '' then
             ply:ChatError('LawsEmpty')

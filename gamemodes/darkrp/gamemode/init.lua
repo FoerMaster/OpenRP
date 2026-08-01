@@ -59,6 +59,7 @@ include('sv_jobs.lua')
 include('modules/government/sh_election.lua')
 include('modules/government/sv_election.lua')
 include('modules/government/sv_laws.lua')
+include('modules/government/sv_lottery.lua')
 
 -- Экономика
 include('economy/sh_player.lua')

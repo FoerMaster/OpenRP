@@ -9,6 +9,14 @@ local function allVoted(voting)
     return table.Count(voting.votes) >= table.Count(voting.voters)
 end
 
+local function resend(id, voting, ply)
+    net.Start('voting')
+        net.WriteString(id)
+        net.WriteString(voting.text)
+        net.WriteUInt(math.ceil(timer.TimeLeft('vote_' .. id)), 8)
+    net.Send(ply)
+end
+
 local function close(id, voting)
     local pending = {}
 
@@ -112,7 +120,10 @@ net.Receive('voting', function(_, ply)
     if !voting then return end
     if !voting.voters[ply] then return end
     if voting.votes[ply] != nil then return end
-    if (!hook.Run('OnPlayerVote', ply, id, choice)) then return end
+    if (!hook.Run('OnPlayerVote', ply, id, choice)) then
+        resend(id, voting, ply)
+        return
+    end
 
     voting.votes[ply] = choice
 
