@@ -24,6 +24,7 @@ include('voting/cl_init.lua')
 -- Правительство
 include('modules/government/sh_election.lua')
 include('modules/government/cl_election.lua')
+include('modules/government/cl_laws.lua')
 
 -- Экономика
 include('economy/sh_player.lua')
@@ -98,6 +99,7 @@ end
 
 function GM:HUDPaint()
     roleplay.HUD.Draw()
+    roleplay.Laws.Draw()
     roleplay.Death.Draw()
 end
 

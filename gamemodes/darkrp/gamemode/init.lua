@@ -20,6 +20,7 @@ AddCSLuaFile('doors/sh_door.lua')
 AddCSLuaFile('building/sh_aps.lua')
 AddCSLuaFile('modules/government/sh_election.lua')
 AddCSLuaFile('modules/government/cl_election.lua')
+AddCSLuaFile('modules/government/cl_laws.lua')
 AddCSLuaFile('chat/cl_chat.lua')
 AddCSLuaFile('vgui/cl_skin.lua')
 AddCSLuaFile('voting/cl_init.lua')
@@ -57,6 +58,7 @@ include('sv_jobs.lua')
 -- Правительство
 include('modules/government/sh_election.lua')
 include('modules/government/sv_election.lua')
+include('modules/government/sv_laws.lua')
 
 -- Экономика
 include('economy/sh_player.lua')
@@ -87,6 +89,7 @@ function GM:InitPostEntity()
     end
 
     roleplay.Shop.Setup()
+    roleplay.Laws.Setup()
 end
 
 hook.Call("RolePlay.Loaded", GM)

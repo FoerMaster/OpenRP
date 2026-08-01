@@ -171,6 +171,12 @@ end
 function DEF_PLY:OnElectionVoted( candidate )
 end
 
+function DEF_PLY:CanEditLaws( laws )
+end
+
+function DEF_PLY:OnEditedLaws( laws )
+end
+
 function DEF_PLY:CanSendChat( channel, text )
 end
 
@@ -217,3 +223,4 @@ JOB_FLAG_CANT_BUY_DOOR = 4
 JOB_FLAG_DEMOTE_ON_DEATH = 5
 JOB_FLAG_RECEIVE_911 = 6
 JOB_FLAG_ELECTION = 7
+JOB_FLAG_EDIT_LAWS = 8

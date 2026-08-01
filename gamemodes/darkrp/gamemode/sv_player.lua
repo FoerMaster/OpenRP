@@ -10,6 +10,7 @@ function GM:PlayerInitialSpawn(ply, transition)
     player_manager.SetPlayerClass(ply, roleplay.DefaultJob())
 
     roleplay.Election.Sync(ply)
+    roleplay.Laws.Sync(ply)
 
     timer.Create("rp_salary_" .. ply:UserID(), roleplay.Config.SalaryDelay:GetInt(), 0, function()
         if IsValid(ply) then
@@ -329,6 +330,18 @@ end
 
 function GM:PlayerElectionVoted(ply, candidate)
     player_manager.RunClass(ply, "OnElectionVoted", candidate)
+end
+
+function GM:OnPlayerEditLaws(ply, laws)
+    local canEdit, custom = player_manager.RunClass(ply, "CanEditLaws", laws)
+    if canEdit != nil then return canEdit, custom end
+    if !ply:HasJobFlag(JOB_FLAG_EDIT_LAWS) then return false end
+
+    return true, laws
+end
+
+function GM:PlayerEditedLaws(ply, laws)
+    player_manager.RunClass(ply, "OnEditedLaws", laws)
 end
 
 function GM:PlayerSay(sender, text, teamChat)

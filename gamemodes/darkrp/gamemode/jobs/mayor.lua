@@ -7,5 +7,5 @@ JOB.MaxHealth = 100
 JOB.StartHealth = 100
 JOB.StartArmor = 0
 JOB.Salary = 2500
-JOB.Flags = { JOB_FLAG_ELECTION, JOB_FLAG_DEMOTE_ON_DEATH }
+JOB.Flags = { JOB_FLAG_ELECTION, JOB_FLAG_DEMOTE_ON_DEATH, JOB_FLAG_EDIT_LAWS }
 JOB.Model = { "models/player/breen.mdl" }

@@ -23,6 +23,9 @@ local SETTINGS = {
     ElectionVoteSeconds = { 'rp_election_vote_seconds', '300', 'Время голосования за кандидатов, секунд' },
     ElectionMaxCandidates = { 'rp_election_max_candidates', '5', 'Максимум кандидатов на выборах' },
 
+    LawsEditDelay = { 'rp_laws_edit_delay', '180', 'Пауза между изменениями законов города, секунд' },
+    LawMaxLength = { 'rp_law_max_length', '64', 'Предел длины одного закона, символов' },
+
     CommandDelay = { 'rp_command_delay', '2', 'Пауза между чат-командами, секунд' },
     AdvertCost = { 'rp_advert_cost', '1500', 'Цена одного сообщения в /advert' },
     AdvertDelay = { 'rp_advert_delay', '60', 'Пауза между сообщениями в /advert, секунд' },
@@ -50,6 +53,7 @@ if SERVER then
     }
 
     CreateConVar('rp_default_job', 'citizen', FLAGS + FCVAR_REPLICATED, 'Профессия, выдаваемая при заходе')
+    CreateConVar('rp_laws_max', '6', FLAGS + FCVAR_REPLICATED, 'Сколько законов может держать город')
 
     roleplay.Config.Engine = {
         physcannon_pullforce = '0',
@@ -70,4 +74,11 @@ function roleplay.DefaultJob()
     local cvar = GetConVar('rp_default_job')
 
     return cvar and cvar:GetString() or 'citizen'
+end
+
+-- Верхний предел держит счетчик законов в 4 битах, которыми он уходит по сети
+function roleplay.MaxLaws()
+    local cvar = GetConVar('rp_laws_max')
+
+    return math.Clamp(cvar and cvar:GetInt() or 6, 1, 15)
 end
