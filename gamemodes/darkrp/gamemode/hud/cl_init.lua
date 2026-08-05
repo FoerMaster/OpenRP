@@ -1,5 +1,7 @@
 roleplay.HUD = roleplay.HUD or {}
 
+local COLORS = roleplay.Kit.Colors
+
 roleplay.HUD.Hidden = {
     ['CHudHealth'] = true,
     ['CHudBattery'] = true,
@@ -52,8 +54,18 @@ end
 function roleplay.HUD.Draw()
     local ply = LocalPlayer()
     local job = ply:Job()
+    local health = ply:Health() / ply:GetMaxHealth()
+
+    RNDX.Circle(55, ScrH()-55, 40):Blur(0.5):Draw()
+    RNDX.Circle(55, ScrH()-55, 40):Color(COLORS.BackgroundSoft):Draw()
+
+    RNDX.Circle(55, ScrH()-55, 40):Color(COLORS.Track):Outline(10):Angles(0, 360):Draw()
+    RNDX.Circle(55, ScrH()-55, 25):Color(COLORS.Track):Angles(0, 360):Draw()
+
+    RNDX.Circle(55, ScrH()-55, 40):Color(COLORS.Health):Outline(10):Angles(90, 90 + 360 * health):Draw()
+    RNDX.Circle(55, ScrH()-55, 25):Color(COLORS.Armor):Angles(90, 90 + 360 * health):Draw()
 
     draw.DrawText(job.DisplayName, "DebugOverlay", 5, 5, job.Color)
-    draw.DrawText(string.format("Зарплата: %s денег", job.Salary), "DebugOverlay", 5, 20, color_white)
-    draw.DrawText(string.format("Кошелек: %s денег", ply:Money()), "DebugOverlay", 5, 35, color_white)
+    draw.DrawText(roleplay.L('HudSalary', job.Salary), "DebugOverlay", 5, 20, COLORS.Text)
+    draw.DrawText(roleplay.L('HudWallet', ply:Money()), "DebugOverlay", 5, 35, COLORS.Text)
 end

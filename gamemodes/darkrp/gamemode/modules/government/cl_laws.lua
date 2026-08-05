@@ -1,11 +1,8 @@
 roleplay.Laws = roleplay.Laws or {}
 
-local TITLE_COLOR = Color(120, 180, 255)
-local LINE_HEIGHT = 15
-local MARGIN = 5
+local COLORS = roleplay.Kit.Colors
 
 local laws = {}
-local lines = {}
 local panel
 
 local function build()
@@ -100,28 +97,109 @@ local function build()
     return frame
 end
 
-function roleplay.Laws.Draw()
-    if #lines == 0 then return end
+local GRADIENT_MAT = Material("gui/gradient_up")
+lawsMenu = lawsMenu or nil
 
-    local x = ScrW() - MARGIN
+if (lawsMenu and IsValid(lawsMenu)) then
+    lawsMenu:Remove()
+end
 
-    draw.DrawText(roleplay.L('LawsTitle'), 'DebugOverlay', x, MARGIN, TITLE_COLOR, TEXT_ALIGN_RIGHT)
+lawsMenu = vgui.Create("DPanel")
+lawsMenu:SetSize(300,200)
+lawsMenu:SetPos(15,15)
+lawsMenu:DockPadding(0, 0, 0, 4)
+lawsMenu.Paint = function(self,w,h)
+    RNDX.Rect(0, 0, w, h)
+        :Rad(8)
+        :Blur(1)
+        :Draw()
+    RNDX.Rect(0, 0, w, h):Rad(8):Color(COLORS.Background):Draw()
+    RNDX.Rect(0, 60, w, 3):Rad(8):Color(COLORS.Accent):Draw()
+end
+lawsMenu.rows = {}
 
-    for i, line in ipairs(lines) do
-        draw.DrawText(line, 'DebugOverlay', x, MARGIN + i * LINE_HEIGHT, color_white, TEXT_ALIGN_RIGHT)
+function lawsMenu:ClearLaws()
+    for k, v in pairs(self.rows) do
+        v:Remove()
     end
 end
+
+function lawsMenu:PerformLayout()
+    self:SizeToChildren(false, true)
+end
+
+lawsMenu.Header = vgui.Create("DPanel", lawsMenu)
+lawsMenu.Header:Dock(TOP)
+lawsMenu.Header:SetTall(60)
+lawsMenu.Header.Paint = function(self,w,h)
+    RNDX.Rect(0, 0, w, h):Radii(8,8,0,0):Material(GRADIENT_MAT):Color(COLORS.AccentGradient):Draw()
+    draw.SimpleText(roleplay.L('LawsHudTitle'), roleplay.Kit.Fonts.Title, 18, (h/2)-9, COLORS.Text, 0, 1)
+    draw.SimpleText(roleplay.L('LawsHudCount', #laws), roleplay.Kit.Fonts.Label, 18, (h/2)+9, COLORS.TextMuted, 0, 1)
+end
+
+function lawsMenu:UpdateLaws()
+    self:ClearLaws()
+    if (#laws == 0) then
+        lawsMenu.rows[1] = vgui.Create("DPanel", lawsMenu)
+        local row = lawsMenu.rows[1]
+        row:Dock(TOP)
+        row:DockPadding(18, 8, 18, 9)
+        row.Paint = function(self, w, h) end
+
+        local text = vgui.Create("DLabel", row)
+        text:Dock(TOP)
+        text:SetFont(roleplay.Kit.Fonts.Label)
+        text:SetTextColor(COLORS.TextMuted)
+        text:SetText(roleplay.L('LawsHudEmpty'))
+
+        text:SetWrap(true)
+        text:SetAutoStretchVertical(true)
+
+        function row:PerformLayout()
+            self:SizeToChildren(false, true)
+        end
+    end
+    for k, v in pairs(laws) do
+        lawsMenu.rows[k] = vgui.Create("DPanel", lawsMenu)
+        local row = lawsMenu.rows[k]
+        row:Dock(TOP)
+        row:DockPadding(28, 8, 18, 9)
+        row.Paint = function(self, w, h)
+            draw.SimpleText(k, roleplay.Kit.Fonts.Numerate, 10, 10, COLORS.TextMuted, 0, 0)
+
+            if (#laws != k) then
+                surface.SetDrawColor(COLORS.Separator)
+                surface.DrawRect(10, h-1, w-20, 1)
+            end
+        end
+
+        local text = vgui.Create("DLabel", row)
+        text:Dock(TOP)
+        text:SetFont(roleplay.Kit.Fonts.Label)
+        text:SetTextColor(COLORS.Text)
+        text:SetText(v)
+
+        text:SetWrap(true)
+        text:SetAutoStretchVertical(true)
+
+        function row:PerformLayout()
+            self:SizeToChildren(false, true)
+        end
+    end
+end
+
+lawsMenu:UpdateLaws()
 
 net.Receive('laws', function()
     local count = net.ReadUInt(4)
 
     laws = {}
-    lines = {}
 
     for i = 1, count do
         laws[i] = net.ReadString()
-        lines[i] = i .. '. ' .. laws[i]
     end
+
+    lawsMenu:UpdateLaws()
 end)
 
 net.Receive('laws_edit', function()

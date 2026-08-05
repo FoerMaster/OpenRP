@@ -100,7 +100,6 @@ end
 
 function GM:HUDPaint()
     roleplay.HUD.Draw()
-    roleplay.Laws.Draw()
     roleplay.Death.Draw()
 end
 

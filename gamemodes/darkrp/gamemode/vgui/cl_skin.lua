@@ -25,8 +25,9 @@ end
 
 roleplay.Kit.FontConfig = {
     Button = { family = 'Montserrat', size = 17, bold = true },
-    Label = { family = 'Onest', size = 18, bold = false },
-    Title = { family = 'Onest', size = 16, bold = true },
+    Label = { family = 'Onest', size = 20, bold = false },
+    Title = { family = 'Onest', size = 20, bold = true },
+    Numerate = { family = 'Montserrat', size = 20, bold = true },
 }
 
 roleplay.Kit.Fonts = {}
@@ -34,6 +35,29 @@ roleplay.Kit.Fonts = {}
 for role, cfg in pairs(roleplay.Kit.FontConfig) do
     roleplay.Kit.Fonts[role] = createFont(cfg.family, cfg.size, cfg.bold)
 end
+
+roleplay.Kit.Colors = {
+    Accent = Color(28, 91, 232),
+    AccentGradient = Color(28, 91, 232, 60),
+    AccentGlow = Color(28, 91, 232, 30),
+
+    Background = Color(30, 30, 30, 250),
+    BackgroundSoft = Color(30, 30, 30, 230),
+    Track = Color(0, 0, 0, 130),
+    Separator = Color(255, 255, 255, 5),
+
+    Text = Color(255, 255, 255),
+    TextMuted = Color(255, 255, 255, 100),
+
+    ButtonDisabled = Color(255, 255, 255, 120),
+    ButtonPressed = Color(0, 0, 0, 70),
+    ButtonHovered = Color(255, 255, 255, 45),
+
+    Health = Color(80, 255, 160),
+    Armor = Color(255, 150, 60)
+}
+
+local COLORS = roleplay.Kit.Colors
 
 local MATERIAL = Material('models/openrp/ui_kit.png', 'noclamp smooth')
 
@@ -59,25 +83,20 @@ end
 
 local SKIN = table.Copy(derma.GetNamedSkin('Default'))
 
-local BUTTON_DISABLED = Color(255, 255, 255, 120)
-local BUTTON_PRESSED = Color(0, 0, 0, 70)
-local BUTTON_HOVERED = Color(255, 255, 255, 45)
-local BUTTON_GLOW = Color(28, 91, 232, 30)
-
 function SKIN:PaintButton(panel, w, h)
     if panel.m_bBackground == false then return end
 
-    roleplay.Kit.DrawButton(0, 0, w, h, panel:IsEnabled() and color_white or BUTTON_DISABLED)
+    roleplay.Kit.DrawButton(0, 0, w, h, panel:IsEnabled() and COLORS.Text or COLORS.ButtonDisabled)
 
     if panel:IsEnabled() then
         if (panel.Depressed or panel:GetToggle()) then
-            roleplay.Kit.DrawButton(0, 0, w, h, BUTTON_PRESSED)
+            roleplay.Kit.DrawButton(0, 0, w, h, COLORS.ButtonPressed)
         elseif panel.Hovered then
-            roleplay.Kit.DrawButton(0, 0, w, h, BUTTON_HOVERED)
+            roleplay.Kit.DrawButton(0, 0, w, h, COLORS.ButtonHovered)
         end
     end
 
-    RNDX.Rect(0, 0, w, h):Rad(13):Color(BUTTON_GLOW):Shadow(15, 0, 0, 0):Draw()
+    RNDX.Rect(0, 0, w, h):Rad(13):Color(COLORS.AccentGlow):Shadow(15, 0, 0, 0):Draw()
 end
 
 derma.DefineSkin('OpenRP', 'OpenRP UI Kit', SKIN)

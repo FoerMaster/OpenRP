@@ -98,6 +98,9 @@ GM.Lang = {
     ['LawsEmpty'] = "Закон не может быть пустым!",
     ['LawsTooLong'] = "Закон не должен быть длиннее %s символов!",
     ['LawsChanged'] = "Мэр изменил законы города",
+    ['LawsHudTitle'] = "ЗАКОНЫ ГОРОДА",
+    ['LawsHudCount'] = "Всего %s законов города",
+    ['LawsHudEmpty'] = "Нет законов в городе",
     ['LawDefaultKill'] = "Запрещено убивать без причины",
     ['LawDefaultRaid'] = "Запрещено грабить и вымогать без причины",
     ['LawDefaultWeapon'] = "Запрещено носить оружие в открытую",
@@ -128,11 +131,13 @@ GM.Lang = {
     ['ShopNoShip'] = "Этот предмет не продается ящиком!",
     ['ShopLimit'] = "У вас не может быть больше %s таких предметов!",
     ['ShopBought'] = "Куплено: %s за %s$",
-    ['ShopBoughtShip'] = "Куплен ящик: %s, %s шт. за %s$"
+    ['ShopBoughtShip'] = "Куплен ящик: %s, %s шт. за %s$",
+    ['HudSalary'] = "Зарплата: %s денег",
+    ['HudWallet'] = "Кошелек: %s денег"
 }
 
 function roleplay.L(key, ...)
-    local text = GAMEMODE.Lang[key] or key
+    local text = (GAMEMODE or GM).Lang[key] or key
 
     if select('#', ...) == 0 then return text end
 
